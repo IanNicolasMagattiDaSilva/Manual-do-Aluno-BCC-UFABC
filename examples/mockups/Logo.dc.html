@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Logo Bcc em pixel</title>
+<script src="./_runtime/react.js"></script>
+<script src="./_runtime/react-dom.js"></script>
+<script src="./_runtime/support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div role="img" aria-label="Bcc" style="position: relative; width: {{w}}px; height: {{h}}px">
+<sc-for list="{{cells}}" as="c" hint-placeholder-count="40">
+<div style="position: absolute; left: {{c.x}}px; top: {{c.y}}px; width: {{c.s}}px; height: {{c.s}}px; background: {{color}}"></div>
+</sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"cell":{"editor":"int","default":30,"min":2,"max":60},"color":{"editor":"color","default":"#008BBB","options":["#008BBB","#FFFFFF","#0E1726","#FFCC00"]},"$preview":{"width":480,"height":210}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.props.cell ?? 30;
+    const color = this.props.color ?? '#008BBB';
+    const grid = [
+      '11111...........',
+      '11..11..........',
+      '11..11..111..111',
+      '11111..11...11..',
+      '11..11.11...11..',
+      '11..11.11...11..',
+      '11111...111..111'
+    ];
+    const gap = Math.max(1, Math.round(s / 8));
+    const cells = [];
+    grid.forEach((row, r) => {
+      for (let c = 0; c < row.length; c++) {
+        if (row[c] === '1') cells.push({ x: c * s, y: r * s, s: s - gap });
+      }
+    });
+    return { cells, color, w: 16 * s - gap, h: 7 * s - gap };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Manual do BCC — Campi e cursos</title>
+<script src="./_runtime/react.js"></script>
+<script src="./_runtime/react-dom.js"></script>
+<script src="./_runtime/support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFFFF}
+a{color:#006E95}a:hover{color:#004F6B}
+</style>
+</helmet>
+<div style="width: 100%; min-height: 100vh; background: #FFFFFF; color: #0E1726; font-family: Inter, system-ui, sans-serif; font-size: 16px; line-height: 1.7">
+<dc-import name="Header" ativo="ufabc" hint-size="100%,77px"></dc-import>
+<div style="max-width: 1360px; margin: 0 auto; padding: 0 32px; display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start; box-sizing: border-box">
+<div style="flex: 0 1 260px"><dc-import name="Sidebar" atual="Campi e cursos" hint-size="260px,1060px"></dc-import></div>
+<main style="flex: 999 1 560px; min-width: 0; padding: 40px 0 96px; max-width: 920px">
+<p style="margin: 0 0 24px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #4A5568"><a href="Main.dc.html" style="color: #4A5568">Início</a> / UFABC / <span style="color: #0E1726">Campi e cursos</span></p>
+<dc-import name="Hero" parte="Parte 1 · UFABC" titulo="Campi e cursos" tema="{{ tema }}" seed="{{ 3 }}" hint-size="100%,220px"></dc-import>
+
+<h2 style="margin: 56px 0 12px; font-family: Anton, sans-serif; font-weight: 400; font-size: 34px; text-transform: uppercase">Sobre a UFABC</h2>
+<p style="margin: 0 0 28px; font-size: 18px; color: #2D3748; max-width: 720px">Criada em 2005 no ABC Paulista, a UFABC é conhecida pelo modelo interdisciplinar. O ingresso é pelo SISU, em um curso de base ampla: o BC&amp;T (Ciência e Tecnologia) ou o BC&amp;H (Ciências e Humanidades). Depois de concluí-lo, você escolhe a formação específica.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0; border-top: 2px solid #0E1726; border-bottom: 2px solid #0E1726">
+<div style="padding: 20px 20px 20px 0; display: flex; flex-direction: column; gap: 4px"><span style="font-family: Anton, sans-serif; font-size: 44px; line-height: 1">2005</span><span style="font-size: 14px; color: #4A5568">Ano de criação</span></div>
+<div style="padding: 20px; border-left: 1px solid #E2E6EA; display: flex; flex-direction: column; gap: 4px"><span style="font-family: Anton, sans-serif; font-size: 44px; line-height: 1">2 campi</span><span style="font-size: 14px; color: #4A5568">Santo André e São Bernardo do Campo</span></div>
+<div style="padding: 20px; border-left: 1px solid #E2E6EA; display: flex; flex-direction: column; gap: 4px"><span style="font-family: Anton, sans-serif; font-size: 44px; line-height: 1">SISU</span><span style="font-size: 14px; color: #4A5568">Porta de entrada</span></div>
+</div>
+
+<h2 style="margin: 56px 0 20px; font-family: Anton, sans-serif; font-weight: 400; font-size: 34px; text-transform: uppercase">Os campi e seus cursos</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px">
+<sc-for list="{{campi}}" as="c" hint-placeholder-count="2">
+<article style="border: 2px solid #0E1726; display: flex; flex-direction: column">
+<div style="background: {{c.bg}}; color: #FFFFFF; padding: 22px 24px">
+<p style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #FFCC00">Campus</p>
+<h3 style="margin: 4px 0 6px; font-family: Anton, sans-serif; font-weight: 400; font-size: 36px; line-height: 1.05; text-transform: uppercase">{{c.nome}}</h3>
+<p style="margin: 0; font-size: 14px; display: flex; gap: 8px; align-items: flex-start"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 16px; margin-top: 3px"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>{{c.end}}</p>
+</div>
+<div style="padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 18px">
+<sc-for list="{{c.grupos}}" as="g" hint-placeholder-count="3">
+<div>
+<p style="margin: 0 0 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #4A5568">{{g.nome}} · {{g.n}}</p>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{g.cursos}}" as="k" hint-placeholder-count="5">
+<span style="padding: 4px 10px; font-size: 14px; background: {{k.bg}}; color: {{k.fg}}; font-weight: {{k.w}}">{{k.t}}</span>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+</article>
+</sc-for>
+</div>
+<p style="margin: 16px 0 0; font-size: 14px; color: #4A5568; display: flex; gap: 16px; flex-wrap: wrap"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 12px; height: 12px; background: #FFCC00"></span>Curso de ingresso (bacharelado interdisciplinar)</span><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 12px; height: 12px; background: #008BBB"></span>Ciência da Computação</span></p>
+
+<aside style="margin-top: 40px; background: #FFCC00; padding: 28px 32px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase">// Dica</span>
+<p style="margin: 0; font-size: 18px; font-weight: 500">O BCC é ofertado só no campus Santo André. Você chega até ele pelo BC&amp;T, que fica no mesmo campus.</p>
+</aside>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 64px">
+<a href="Main.dc.html" style="border: 2px solid #E2E6EA; padding: 20px; text-decoration: none; color: #0E1726; display: flex; flex-direction: column; gap: 4px"><span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #4A5568">← Anterior</span><span style="font-weight: 600; font-size: 17px">Início</span></a>
+<a href="Matricula.dc.html" style="border: 2px solid #008BBB; padding: 20px; text-decoration: none; color: #0E1726; display: flex; flex-direction: column; gap: 4px; text-align: right"><span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #006E95">Próxima →</span><span style="font-weight: 600; font-size: 17px">Matrícula e ajustes</span></a>
+</div>
+</main>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"tema":{"editor":"enum","options":["amarelo","azul"],"default":"amarelo"},"$preview":{"width":1440,"height":1900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const chip = (t) => t === 'BC&T' || t === 'BC&H'
+      ? { t, bg: '#FFCC00', fg: '#0E1726', w: 700 }
+      : t === 'Ciência da Computação'
+        ? { t, bg: '#008BBB', fg: '#FFFFFF', w: 700 }
+        : { t, bg: '#F1F3F5', fg: '#0E1726', w: 400 };
+    const g = (nome, arr) => ({ nome, n: arr.length, cursos: arr.map(chip) });
+    return {
+      tema: this.props.tema ?? 'amarelo',
+      campi: [
+        { nome: 'Santo André', end: 'Avenida dos Estados, 5001 · Santo André', bg: '#006633', grupos: [
+          g('Bacharelados', ['BC&T', 'Ciência da Computação', 'Biotecnologia', 'Ciência de Dados', 'Ciências Biológicas', 'Física', 'Matemática', 'Química']),
+          g('Engenharias', ['Ambiental e Urbana', 'Energia', 'Informação', 'Instrumentação, Automação e Robótica', 'Materiais']),
+          g('Licenciaturas', ['Ciências Biológicas', 'Física', 'Matemática', 'Química', 'Pedagogia'])
+        ] },
+        { nome: 'São Bernardo do Campo', end: 'Alameda da Universidade, s/nº · Anchieta · São Bernardo do Campo', bg: '#0E1726', grupos: [
+          g('Bacharelados', ['BC&H', 'Neurociência', 'Ciências Econômicas', 'Filosofia', 'Planejamento Territorial', 'Políticas Públicas', 'Relações Internacionais']),
+          g('Engenharias', ['Aeroespacial', 'Biomédica', 'Gestão']),
+          g('Licenciaturas', ['Filosofia', 'Geografia', 'História'])
+        ] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

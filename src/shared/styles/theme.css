@@ -1,0 +1,45 @@
+/* ============================================================
+   THEME.CSS — Único arquivo com @theme + carregamento de fonts
+   Decisão: todo token novo entra aqui com comentário explicando
+   o uso. Nenhum outro arquivo define tokens.
+   ============================================================ */
+
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  /* --- Cores da marca -------------------------------------- */
+  --color-brand-azul:        #008BBB; /* azul principal; fundo de header hero e destaque */
+  --color-brand-azul-escuro: #006E95; /* hover de links azul; border de callout */
+  --color-brand-azul-claro:  #3FB8E5; /* accent, chips de fatos na home */
+  --color-brand-amarelo:     #FFCC00; /* variante hero amarela, chips, badge D */
+  --color-brand-verde:       #006633; /* Parte 1 — UFABC; badge A/B/C aprovado */
+
+  /* --- Foreground ------------------------------------------ */
+  --color-fg-default:        #0E1726; /* texto principal, títulos na variante amarela */
+  --color-fg-strong:         #2D3748; /* texto de corpo secundário (lead paragraphs) */
+  --color-fg-muted:          #4A5568; /* meta, breadcrumb, placeholder */
+  --color-fg-on-azul:        #04222F; /* texto sobre fundo azul (variante azul do hero) */
+  --color-fg-on-dark-muted:  #D5DCE3; /* texto muted sobre fundo escuro (#0E1726) */
+
+  /* --- Background ------------------------------------------ */
+  --color-bg-default:        #FFFFFF;
+  --color-bg-azul-soft:      #E6F4F9; /* fundo de item ativo na sidebar; fundo de callout */
+  --color-bg-surface:        #F3F5F7; /* fundo de footer, cards neutros */
+
+  /* --- Bordas ---------------------------------------------- */
+  --color-border-subtle:     #E2E6EA; /* divisores, borda padrão de inputs */
+  --color-border-strong:     #CBD2D9; /* borda de inputs focados; separador no header */
+
+  /* --- Status ---------------------------------------------- */
+  --color-status-erro:       #B3261E; /* badge F/O reprovado */
+
+  /* --- Tipografia ------------------------------------------ */
+  --font-display: 'Anton', sans-serif;          /* títulos grandes, uppercase, tracking amplo */
+  --font-sans:    'Inter', system-ui, sans-serif; /* corpo, line-height 1.6-1.7 */
+  --font-mono:    'JetBrains Mono', monospace;   /* chips, eyebrows, labels uppercase */
+
+  /* --- Layout ---------------------------------------------- */
+  --width-content-home: 1200px; /* max-width da home */
+  --width-content-doc:  1360px; /* max-width das páginas de documentação */
+}

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cp \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\_extracted_tmp\\\\Campi.dc.html\" \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\examples\\\\mockups\\\\\" && cp \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\_extracted_tmp\\\\canvas.json\" \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\examples\\\\mockups\\\\\")",
+      "Bash(cp \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\_extracted_tmp\\\\Capa.dc.html\" \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\examples\\\\mockups\\\\\" && cp \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\_extracted_tmp\\\\Grade.dc.html\" \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\examples\\\\mockups\\\\\")",
+      "Bash(cp \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\_extracted_tmp\\\\Header.dc.html\" \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\examples\\\\mockups\\\\\" && cp \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\_extracted_tmp\\\\Hero.dc.html\" \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\examples\\\\mockups\\\\\")",
+      "Bash(cp \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\_extracted_tmp\\\\Logo.dc.html\" \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\examples\\\\mockups\\\\\" && cp \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\_extracted_tmp\\\\Main.dc.html\" \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\examples\\\\mockups\\\\\")",
+      "Bash(cp \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\_extracted_tmp\\\\Matricula.dc.html\" \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\examples\\\\mockups\\\\\" && cp \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\_extracted_tmp\\\\MatrizBCT.dc.html\" \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\examples\\\\mockups\\\\\")",
+      "PowerShell(Get-ChildItem \"c:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\src\" -Force | ForEach-Object { $bytes = [System.Text.Encoding]::UTF8.GetBytes\\($_.Name\\); \"$\\($_.Name\\) :: $\\([BitConverter]::ToString\\($bytes\\)\\)\" })"
+    ]
+  }
+}

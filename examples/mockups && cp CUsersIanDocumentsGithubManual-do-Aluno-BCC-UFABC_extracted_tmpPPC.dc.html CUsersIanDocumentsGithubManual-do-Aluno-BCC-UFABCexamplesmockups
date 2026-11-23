@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>PDF — Página de conteúdo</title>
+<script src="./_runtime/react.js"></script>
+<script src="./_runtime/react-dom.js"></script>
+<script src="./_runtime/support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFFFF}
+</style>
+</helmet>
+<div style="width: 794px; height: 1123px; position: relative; overflow: hidden; background: #FFFFFF; color: #0E1726; font-family: Inter, system-ui, sans-serif; font-size: 15px; line-height: 1.55">
+<div style="position: absolute; left: 72px; right: 72px; top: 44px; display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid #CBD2D9; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #4A5568">
+<span>Manual do aluno</span>
+<span style="display: flex; align-items: center; gap: 8px"><span style="width: 8px; height: 8px; background: #006633"></span>Parte 1 · UFABC</span>
+</div>
+
+<div style="position: absolute; left: 72px; right: 72px; top: 104px; display: flex; flex-direction: column; gap: 18px">
+<div>
+<h1 style="margin: 0; font-family: Anton, sans-serif; font-weight: 400; font-size: 50px; line-height: 1; text-transform: uppercase">Avaliação e coeficientes</h1>
+<div style="width: 64px; height: 8px; background: #FFCC00; margin-top: 12px"></div>
+</div>
+<p style="margin: 0; font-size: 16px; color: #2D3748">O desempenho em cada disciplina é expresso por conceitos, e não por notas numéricas. Além do domínio do conteúdo, a avaliação considera aplicação dos conceitos, criatividade, clareza e participação.</p>
+
+<table style="width: 100%; border-collapse: collapse; font-size: 14px">
+<caption style="text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #4A5568; padding-bottom: 6px">Tabela 1 · Conceitos possíveis</caption>
+<thead>
+<tr style="border-bottom: 2px solid #0E1726; text-align: left">
+<th scope="col" style="padding: 6px 8px 6px 0; width: 56px">Conceito</th>
+<th scope="col" style="padding: 6px 8px; width: 110px">Resultado</th>
+<th scope="col" style="padding: 6px 0 6px 8px">Significado</th>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{grades}}" as="g" hint-placeholder-count="7">
+<tr style="border-bottom: 1px solid #E2E6EA">
+<th scope="row" style="padding: 5px 8px 5px 0; text-align: left"><span style="display: inline-flex; width: 26px; height: 26px; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; background: {{g.bg}}; color: {{g.fg}}">{{g.k}}</span></th>
+<td style="padding: 5px 8px; font-weight: 600">{{g.s}}</td>
+<td style="padding: 5px 0 5px 8px; color: #2D3748">{{g.d}}</td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+
+<h2 style="margin: 8px 0 0; font-family: Anton, sans-serif; font-weight: 400; font-size: 26px; text-transform: uppercase">Coeficientes de desempenho</h2>
+<p style="margin: 0; color: #2D3748">Pesos: A = 4, B = 3, C = 2, D = 1, F = O = 0. Os coeficientes definem quantos créditos você pode pedir e pesam na disputa por vagas nos cursos específicos.</p>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+<sc-for list="{{coefs}}" as="c" hint-placeholder-count="3">
+<div style="border-top: 6px solid {{c.c}}; background: #F5F7F9; padding: 14px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-family: Anton, sans-serif; font-size: 34px; line-height: 1">{{c.k}}</span>
+<span style="font-weight: 700; font-size: 13px">{{c.n}}</span>
+<span style="font-size: 13px; color: #2D3748; line-height: 1.45">{{c.d}}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="background: #FFCC00; padding: 16px 20px; display: flex; gap: 16px; align-items: baseline">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; white-space: nowrap">// Dica</span>
+<p style="margin: 0; font-weight: 500">A recuperação é um direito, não um recurso excepcional: ela acontece no mínimo 72 horas depois de você saber o seu conceito.</p>
+</div>
+</div>
+
+<div style="position: absolute; left: 72px; bottom: 44px">
+<dc-import name="PdfFolio" secao="Parte 1 · UFABC" num="06" hint-size="650px,36px"></dc-import>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":794,"height":1123}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      grades: [
+        { k: 'A', s: 'Aprovado', d: 'Desempenho excepcional', bg: '#006633', fg: '#FFFFFF' },
+        { k: 'B', s: 'Aprovado', d: 'Bom desempenho', bg: '#006633', fg: '#FFFFFF' },
+        { k: 'C', s: 'Aprovado', d: 'Desempenho mínimo satisfatório', bg: '#006633', fg: '#FFFFFF' },
+        { k: 'D', s: 'Aprovado', d: 'Aproveitamento mínimo não satisfatório', bg: '#FFCC00', fg: '#0E1726' },
+        { k: 'F', s: 'Reprovado', d: 'A disciplina deve ser cursada novamente', bg: '#B3261E', fg: '#FFFFFF' },
+        { k: 'O', s: 'Reprovado', d: 'Reprovado por falta', bg: '#B3261E', fg: '#FFFFFF' },
+        { k: 'I', s: 'Incompleto', d: 'Vira A, B, C, D ou F até o fim do quadrimestre seguinte', bg: '#E2E6EA', fg: '#0E1726' }
+      ],
+      coefs: [
+        { k: 'CR', n: 'Rendimento', d: 'Média dos conceitos ponderada pelos créditos de todas as disciplinas cursadas.', c: '#008BBB' },
+        { k: 'CA', n: 'Aproveitamento', d: 'Como o CR, mas conta só o melhor conceito de cada disciplina repetida.', c: '#006633' },
+        { k: 'CP', n: 'Progressão', d: 'Créditos aprovados em relação aos exigidos pelo curso.', c: '#FFCC00' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

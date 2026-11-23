@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>PDF — Índice</title>
+<script src="./_runtime/react.js"></script>
+<script src="./_runtime/react-dom.js"></script>
+<script src="./_runtime/support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFFFF}
+</style>
+</helmet>
+<div style="width: 794px; height: 1123px; position: relative; overflow: hidden; background: #FFFFFF; color: #0E1726; font-family: Inter, system-ui, sans-serif">
+<div style="height: 320px; background: #FFCC00; position: relative; overflow: hidden">
+<div aria-hidden="true" style="position: absolute; right: 0; top: 0; width: 520px; height: 320px">
+<dc-import name="Wafer" tema="amarelo" w="{{ 520 }}" h="{{ 320 }}" die="{{ 96 }}" ax="{{ 1 }}" ay="{{ 0 }}" seed="{{ 9 }}" fundo="{{ false }}" hint-size="520px,320px"></dc-import>
+</div>
+<div style="position: absolute; left: 72px; bottom: 48px">
+<p style="margin: 0 0 10px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase">Universidade Federal do ABC</p>
+<h1 style="margin: 0; font-family: Anton, sans-serif; font-weight: 400; font-size: 88px; line-height: 0.95; text-transform: uppercase">Índice</h1>
+<p style="margin: 8px 0 0; font-size: 16px; font-weight: 500">O que você vai encontrar aqui</p>
+</div>
+</div>
+<div style="position: absolute; left: 72px; right: 72px; top: 368px; display: flex; flex-direction: column; gap: 26px">
+<sc-for list="{{parts}}" as="p" hint-placeholder-count="3">
+<section>
+<div style="display: flex; align-items: baseline; gap: 12px; border-bottom: 2px solid #0E1726; padding-bottom: 6px; margin-bottom: 6px">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: {{p.c}}">{{p.n}}</span>
+<span style="font-family: Anton, sans-serif; font-size: 24px; text-transform: uppercase; line-height: 1.1">{{p.t}}</span>
+</div>
+<sc-for list="{{p.items}}" as="it" hint-placeholder-count="6">
+<div style="display: flex; align-items: baseline; gap: 8px; font-size: 14px; line-height: 24px">
+<span>{{it.t}}</span>
+<span aria-hidden="true" style="flex: 1 1 auto; border-bottom: 2px dotted #B8C2CC; transform: translateY(-4px)"></span>
+<span style="font-family: 'JetBrains Mono', monospace; font-weight: 700">{{it.pg}}</span>
+</div>
+</sc-for>
+</section>
+</sc-for>
+</div>
+<div style="position: absolute; left: 72px; bottom: 48px">
+<dc-import name="PdfFolio" secao="Índice" num="02" hint-size="650px,36px"></dc-import>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":794,"height":1123}}'>
+class Component extends DCLogic {
+  renderVals() {
+    let pg = 3;
+    const it = (arr) => arr.map((t) => ({ t, pg: String(pg++).padStart(2, '0') }));
+    return {
+      parts: [
+        { n: 'Parte 1', t: 'UFABC', c: '#006633', items: it(['Sobre a UFABC, campi e cursos', 'Sistema quadrimestral', 'Matrícula, ajustes e cancelamento', 'Avaliação e coeficientes', 'Trancamento de matrícula', 'Projetos e oportunidades']) },
+        { n: 'Parte 2', t: 'BC&T', c: '#0E1726', items: it(['O que é o BC&T e o PPC', 'Matriz curricular', 'Quadrimestre ideal', 'Extensão e horas complementares', 'Reprovações e problemas na formação', 'Conclusão e curso específico']) },
+        { n: 'Parte 3', t: 'BCC', c: '#006E95', items: it(['O que é o BCC', 'Plano pedagógico e matriz', 'Grade curricular', 'Diferenças entre os PPCs', 'Estágio e PGC / TCC', 'Conclusão do curso']) }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

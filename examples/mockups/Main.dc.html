@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Manual do BCC — Início</title>
+<script src="./_runtime/react.js"></script>
+<script src="./_runtime/react-dom.js"></script>
+<script src="./_runtime/support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFFFF}
+a{color:#006E95}a:hover{color:#004F6B}
+</style>
+</helmet>
+<div style="width: 100%; min-height: 100vh; background: #FFFFFF; color: #0E1726; font-family: Inter, system-ui, sans-serif; font-size: 16px; line-height: 1.6">
+
+<header style="border-bottom: 1px solid #E2E6EA; background: #FFFFFF">
+<div style="max-width: 1200px; margin: 0 auto; padding: 16px 32px; display: flex; flex-wrap: wrap; align-items: center; gap: 24px">
+<a href="#" style="display: flex; align-items: center; gap: 14px; text-decoration: none; color: #0E1726">
+<dc-import name="Logo" cell="{{ logoCell }}" color="#008BBB" hint-size="63px,27px"></dc-import>
+<span style="display: flex; flex-direction: column; line-height: 1.1; border-left: 1px solid #CBD2D9; padding-left: 14px">
+<span style="font-family: Anton, sans-serif; font-size: 20px; letter-spacing: 0.5px; text-transform: uppercase">Manual do aluno</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #4A5568; letter-spacing: 2px; text-transform: uppercase">UFABC · Ciência da Computação</span>
+</span>
+</a>
+<nav aria-label="Principal" style="display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 auto">
+<a href="#" style="padding: 10px 14px; text-decoration: none; color: #0E1726; font-weight: 600; font-size: 15px; border-bottom: 3px solid #008BBB">Início</a>
+<a href="Pagina.dc.html" style="padding: 10px 14px; text-decoration: none; color: #4A5568; font-weight: 500; font-size: 15px">UFABC</a>
+<a href="#" style="padding: 10px 14px; text-decoration: none; color: #4A5568; font-weight: 500; font-size: 15px">BC&amp;T</a>
+<a href="#" style="padding: 10px 14px; text-decoration: none; color: #4A5568; font-weight: 500; font-size: 15px">BCC</a>
+</nav>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<label style="display: flex; align-items: center; gap: 8px; border: 1px solid #CBD2D9; padding: 0 12px; height: 44px; min-width: 220px; box-sizing: border-box; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #4A5568">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5568" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Buscar no manual</span>
+<input type="search" placeholder="Buscar no manual" style="border: 0; outline: 0; font: inherit; color: #0E1726; background: transparent; width: 100%">
+<span style="border: 1px solid #CBD2D9; padding: 0 6px; font-size: 11px">/</span>
+</label>
+<a href="#" style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; background: #008BBB; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 14px">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M5 20h14"></path></svg>
+Baixar PDF
+</a>
+</div>
+</div>
+</header>
+
+<section style="background: {{t.bg}}; position: relative; overflow: hidden">
+<div aria-hidden="true" style="position: absolute; right: 0; top: 0; width: 960px; height: 720px">
+<dc-import name="Wafer" tema="{{ tema }}" w="{{ 960 }}" h="{{ 720 }}" die="{{ 128 }}" ax="{{ 1 }}" ay="{{ 0.35 }}" seed="{{ 7 }}" fundo="{{ false }}" hint-size="960px,720px"></dc-import>
+</div>
+<div style="position: relative; max-width: 1200px; margin: 0 auto; padding: 112px 32px 120px; box-sizing: border-box">
+<p style="margin: 0 0 20px; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: {{t.text}}">&gt; Universidade Federal do ABC<span style="display: inline-block; width: 10px; height: 18px; background: {{t.text}}; vertical-align: -3px; margin-left: 6px"></span></p>
+<h1 style="margin: 0; font-family: Anton, sans-serif; font-weight: 400; font-size: clamp(64px, 9vw, 128px); line-height: 0.95; text-transform: uppercase; letter-spacing: 0.5px; color: {{t.title}}">Manual<br>do aluno</h1>
+<p style="margin: 20px 0 0; font-size: 22px; font-weight: 600; color: {{t.text}}">Do BC&amp;T à Ciência da Computação</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px">
+<a href="Pagina.dc.html" style="display: flex; align-items: center; height: 52px; padding: 0 24px; background: #0E1726; color: #FFFFFF; text-decoration: none; font-weight: 600">Começar a leitura →</a>
+<a href="#" style="display: flex; align-items: center; height: 52px; padding: 0 24px; border: 2px solid {{t.text}}; color: {{t.text}}; text-decoration: none; font-weight: 600; box-sizing: border-box">Ver índice</a>
+</div>
+</div>
+</section>
+
+<section style="max-width: 1200px; margin: 0 auto; padding: 96px 32px 48px; box-sizing: border-box">
+<p style="margin: 0 0 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: #006633">Índice</p>
+<h2 style="margin: 0 0 8px; font-family: Anton, sans-serif; font-weight: 400; font-size: 56px; line-height: 1; text-transform: uppercase">O que você vai encontrar aqui</h2>
+<p style="margin: 0 0 48px; color: #4A5568; font-size: 18px; max-width: 640px">O manual está dividido em três partes, da universidade como um todo até o curso de Ciência da Computação.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px">
+<sc-for list="{{parts}}" as="part" hint-placeholder-count="3">
+<article style="border: 2px solid #0E1726; display: flex; flex-direction: column; background: #FFFFFF">
+<div style="background: {{part.bg}}; color: #FFFFFF; padding: 24px 24px 20px">
+<p style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: {{part.chip}}">{{part.num}}</p>
+<h3 style="margin: 6px 0 2px; font-family: Anton, sans-serif; font-weight: 400; font-size: 40px; line-height: 1.05; text-transform: uppercase">{{part.title}}</h3>
+<p style="margin: 0; font-size: 14px; color: #FFFFFF">{{part.sub}}</p>
+</div>
+<ul style="list-style: none; margin: 0; padding: 12px 24px 20px; display: flex; flex-direction: column">
+<sc-for list="{{part.items}}" as="it" hint-placeholder-count="6">
+<li style="border-bottom: 1px solid #E2E6EA"><a href="#" style="display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; text-decoration: none; color: #0E1726; font-size: 15px"><span>{{it.t}}</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #4A5568">{{it.n}}</span></a></li>
+</sc-for>
+</ul>
+</article>
+</sc-for>
+</div>
+</section>
+
+<section style="max-width: 1200px; margin: 0 auto; padding: 48px 32px; box-sizing: border-box">
+<div style="background: #0E1726; color: #FFFFFF; padding: 48px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px">
+<sc-for list="{{facts}}" as="f" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; gap: 8px; border-top: 4px solid {{f.c}}; padding-top: 16px">
+<span style="font-family: Anton, sans-serif; font-size: 56px; line-height: 1; color: {{f.c}}">{{f.big}}</span>
+<span style="font-size: 15px; color: #D5DCE3">{{f.label}}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<footer style="border-top: 4px solid #006633; background: #F3F5F7">
+<div style="max-width: 1200px; margin: 0 auto; padding: 32px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; font-size: 14px; color: #4A5568">
+<span>Material produzido por [SEU NOME] · Graduando(a) em Ciência da Computação</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 13px">Fontes: prograd.ufabc.edu.br · ufabc.edu.br</span>
+</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"tema":{"editor":"enum","options":["amarelo","azul"],"default":"amarelo"},"$preview":{"width":1440,"height":2180}}'>
+class Component extends DCLogic {
+  theme() {
+    return (this.props.tema ?? 'amarelo') === 'azul'
+      ? { bg: '#008BBB', title: '#FFFFFF', text: '#04222F', }
+      : { bg: '#FFCC00', title: '#0E1726', text: '#0E1726', };
+  }
+  renderVals() {
+    const t = this.theme();
+    return {
+      t,
+      tema: this.props.tema ?? 'amarelo',
+      logoCell: 4,
+      parts: [
+        { num: 'Parte 1', title: 'UFABC', sub: 'Visão organizacional', bg: '#006633', chip: '#FFCC00', items: [
+          { t: 'Campi e cursos', n: '01' }, { t: 'Sistema quadrimestral', n: '02' }, { t: 'Matrícula e ajustes', n: '03' },
+          { t: 'Cancelamento de disciplinas', n: '04' }, { t: 'Avaliação e coeficientes', n: '05' }, { t: 'Projetos, monitoria e pesquisa', n: '06' } ] },
+        { num: 'Parte 2', title: 'BC&T', sub: 'Bacharelado em Ciência e Tecnologia', bg: '#0E1726', chip: '#FFCC00', items: [
+          { t: 'O que é o BC&T', n: '07' }, { t: 'Projeto pedagógico (PPC)', n: '08' }, { t: 'Matriz curricular', n: '09' },
+          { t: 'Quadrimestre ideal', n: '10' }, { t: 'Extensão e horas complementares', n: '11' }, { t: 'Conclusão e curso específico', n: '12' } ] },
+        { num: 'Parte 3', title: 'BCC', sub: 'Bacharelado em Ciência da Computação', bg: '#006E95', chip: '#FFFFFF', items: [
+          { t: 'O que é o BCC', n: '13' }, { t: 'Plano pedagógico', n: '14' }, { t: 'Matriz curricular', n: '15' },
+          { t: 'Diferenças entre os PPCs', n: '16' }, { t: 'Estágio', n: '17' }, { t: 'PGC / TCC e conclusão', n: '18' } ] }
+      ],
+      facts: [
+        { big: '3×12', label: 'Três quadrimestres por ano, de 12 semanas cada', c: '#FFCC00' },
+        { big: '2.400 h', label: 'Carga horária total do BC&T', c: '#FFCC00' },
+        { big: '3.280 h', label: 'Carga horária total do BCC (PPC 2023)', c: '#3FB8E5' },
+        { big: '328 h', label: 'De extensão, requisito para colar grau no BCC', c: '#3FB8E5' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

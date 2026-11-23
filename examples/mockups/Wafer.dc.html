@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Padrão wafer de silício</title>
+<script src="./_runtime/react.js"></script>
+<script src="./_runtime/react-dom.js"></script>
+<script src="./_runtime/support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div aria-hidden="true" style="position: relative; width: {{w}}px; height: {{h}}px; overflow: hidden; background: {{bg}}">
+<sc-for list="{{rects}}" as="d" hint-placeholder-count="160">
+<div style="position: absolute; left: {{d.x}}px; top: {{d.y}}px; width: {{d.w}}px; height: {{d.h}}px; background: {{d.bg}}; opacity: {{d.o}}; border-radius: 3px; box-sizing: border-box"></div>
+</sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"tema":{"editor":"enum","options":["amarelo","azul"],"default":"amarelo"},"w":{"editor":"int","default":480,"min":80,"max":2000},"h":{"editor":"int","default":480,"min":80,"max":2000},"die":{"editor":"int","default":96,"min":32,"max":240},"ax":{"editor":"range","default":1,"min":0,"max":1,"step":0.05},"ay":{"editor":"range","default":0.2,"min":0,"max":1,"step":0.05},"seed":{"editor":"int","default":7,"min":1,"max":999},"fundo":{"editor":"boolean","default":true},"$preview":{"width":480,"height":480}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const w = this.props.w ?? 480, h = this.props.h ?? 480;
+    const die = this.props.die ?? 96;
+    const ax = (this.props.ax ?? 1) * w, ay = (this.props.ay ?? 0.2) * h;
+    let s = this.props.seed ?? 7;
+    const r = () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+    const P = (this.props.tema ?? 'amarelo') === 'azul'
+      ? { base: '#008BBB', fills: ['#0892C3', '#0786B5', '#0D97C7', '#0781AE'] }
+      : { base: '#FFCC00', fills: ['#FFD31F', '#FAC600', '#FFD838', '#F5C100'] };
+    const g = Math.max(4, Math.round(die / 16));
+    const minSide = Math.max(10, die / 7);
+    const rects = [];
+    const leaf = (x, y, rw, rh, o) => {
+      const fill = P.fills[Math.floor(r() * P.fills.length)];
+      rects.push({ x: Math.round(x + g / 2), y: Math.round(y + g / 2), w: Math.round(rw - g), h: Math.round(rh - g), bg: fill, o });
+    };
+    const split = (x, y, rw, rh, depth, maxD, o) => {
+      if (depth >= maxD || Math.min(rw, rh) < minSide * 2 || (depth > 0 && r() < 0.3)) return leaf(x, y, rw, rh, o);
+      const v = r();
+      if (v < 0.35) {
+        const hw = rw / 2, hh = rh / 2;
+        split(x, y, hw, hh, depth + 1, maxD, o); split(x + hw, y, hw, hh, depth + 1, maxD, o);
+        split(x, y + hh, hw, hh, depth + 1, maxD, o); split(x + hw, y + hh, hw, hh, depth + 1, maxD, o);
+      } else {
+        const k = [1 / 3, 1 / 2, 2 / 3][Math.floor(r() * 3)];
+        if (rw >= rh) { split(x, y, rw * k, rh, depth + 1, maxD, o); split(x + rw * k, y, rw * (1 - k), rh, depth + 1, maxD, o); }
+        else { split(x, y, rw, rh * k, depth + 1, maxD, o); split(x, y + rh * k, rw, rh * (1 - k), depth + 1, maxD, o); }
+      }
+    };
+    const cols = Math.ceil(w / die) + 1, rows = Math.ceil(h / die) + 1;
+    const reach = Math.hypot(Math.max(ax, w - ax), Math.max(ay, h - ay)) * 0.9;
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const x = col * die - die / 4, y = row * die - die / 4;
+        const t = 1 - Math.hypot(x + die / 2 - ax, y + die / 2 - ay) / reach;
+        if (t <= 0 || r() > t * 1.7) continue;
+        const maxD = t > 0.62 ? 3 : t > 0.35 ? 2 : 1;
+        split(x, y, die, die, 0, maxD, Math.min(0.9, t * 1.3).toFixed(2));
+      }
+    }
+    return { w, h, bg: (this.props.fundo ?? true) ? P.base : 'transparent', rects };
+  }
+}
+</script>
+</body>
+</html>

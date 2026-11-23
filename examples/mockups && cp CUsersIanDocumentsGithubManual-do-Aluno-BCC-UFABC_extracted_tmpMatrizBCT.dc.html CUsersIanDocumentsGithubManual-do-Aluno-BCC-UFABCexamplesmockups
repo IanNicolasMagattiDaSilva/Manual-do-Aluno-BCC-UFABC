@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Manual do BCC — Matrícula e ajustes</title>
+<script src="./_runtime/react.js"></script>
+<script src="./_runtime/react-dom.js"></script>
+<script src="./_runtime/support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFFFF}
+a{color:#006E95}a:hover{color:#004F6B}
+</style>
+</helmet>
+<div style="width: 100%; min-height: 100vh; background: #FFFFFF; color: #0E1726; font-family: Inter, system-ui, sans-serif; font-size: 16px; line-height: 1.7">
+<dc-import name="Header" ativo="ufabc" hint-size="100%,77px"></dc-import>
+<div style="max-width: 1360px; margin: 0 auto; padding: 0 32px; display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start; box-sizing: border-box">
+<div style="flex: 0 1 260px"><dc-import name="Sidebar" atual="Matrícula e ajustes" hint-size="260px,1060px"></dc-import></div>
+<main style="flex: 999 1 560px; min-width: 0; padding: 40px 0 96px; max-width: 920px">
+<p style="margin: 0 0 24px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #4A5568"><a href="Main.dc.html" style="color: #4A5568">Início</a> / UFABC / <span style="color: #0E1726">Matrícula e ajustes</span></p>
+<dc-import name="Hero" parte="Parte 1 · UFABC" titulo="Matrícula e ajustes" tema="{{ tema }}" seed="{{ 21 }}" hint-size="100%,220px"></dc-import>
+
+<p style="margin: 40px 0 0; font-size: 18px; color: #2D3748; max-width: 720px">O ano letivo tem <strong>três quadrimestres de 12 semanas</strong>, com recesso entre eles. Cada etapa da matrícula tem uma janela curta, então vale conhecer a ordem de tudo.</p>
+
+<h2 style="margin: 48px 0 8px; font-family: Anton, sans-serif; font-weight: 400; font-size: 34px; text-transform: uppercase">Linha do tempo de um quadrimestre</h2>
+<p style="margin: 0 0 20px; font-size: 14px; color: #4A5568">As datas exatas saem a cada ano no calendário acadêmico e no administrativo.</p>
+<div style="overflow-x: auto; border: 2px solid #0E1726">
+<div style="min-width: 760px; padding: 16px 16px 8px">
+<div style="display: grid; grid-template-columns: 200px repeat(14, minmax(0, 1fr)); gap: 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #4A5568; margin-bottom: 8px">
+<span></span>
+<sc-for list="{{weeks}}" as="wk" hint-placeholder-count="14">
+<span style="text-align: center; padding: 4px 0; background: {{wk.bg}}; border-left: 1px solid #FFFFFF; font-weight: 700">{{wk.t}}</span>
+</sc-for>
+</div>
+<sc-for list="{{events}}" as="e" hint-placeholder-count="7">
+<div style="display: grid; grid-template-columns: 200px repeat(14, minmax(0, 1fr)); align-items: center; min-height: 40px; border-top: 1px solid #E2E6EA">
+<span style="font-size: 14px; font-weight: 600; padding-right: 12px; line-height: 1.3">{{e.label}}</span>
+<div style="grid-column: {{e.a}} / {{e.b}}; height: 22px; background: {{e.bg}}; margin: 0 2px; display: flex; align-items: center; padding: 0 8px; font-size: 12px; color: {{e.fg}}; font-weight: 600; white-space: nowrap; overflow: hidden">{{e.note}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<h2 style="margin: 56px 0 20px; font-family: Anton, sans-serif; font-weight: 400; font-size: 34px; text-transform: uppercase">Passo a passo</h2>
+<ol style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+<sc-for list="{{steps}}" as="s" hint-placeholder-count="4">
+<li style="border-top: 6px solid {{s.c}}; background: #F5F7F9; padding: 20px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: Anton, sans-serif; font-size: 40px; line-height: 1; color: #0E1726">{{s.n}}</span>
+<span style="font-weight: 700; font-size: 17px">{{s.t}}</span>
+<span style="font-size: 14px; color: #2D3748; line-height: 1.55">{{s.d}}</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A5568; margin-top: auto">{{s.when}}</span>
+</li>
+</sc-for>
+</ol>
+
+<div style="margin: 32px 0 0; border: 2px solid #008BBB; background: #E6F4F9; padding: 20px 24px; display: flex; gap: 16px; align-items: flex-start">
+<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#006E95" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 24px; margin-top: 3px"><rect x="4" y="4" width="16" height="16"></rect><path d="M12 9v4"></path><path d="M12 16h.01"></path></svg>
+<div><p style="margin: 0 0 4px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: #006E95">Importante</p>
+<p style="margin: 0">Pedir a matrícula não garante a vaga: tudo depende da disponibilidade na turma. E quanto melhor o seu rendimento, mais créditos você pode solicitar por quadrimestre. Cada crédito equivale a 12 horas.</p></div>
+</div>
+
+<h2 style="margin: 56px 0 8px; font-family: Anton, sans-serif; font-weight: 400; font-size: 34px; text-transform: uppercase">Cancelar depois do prazo</h2>
+<p style="margin: 0 0 20px; color: #2D3748; max-width: 720px">Pela Resolução ConsEPE 260, o cancelamento só vale até o fim da primeira semana de aulas. Depois disso, existe o cancelamento excepcional, com documento oficial. Nos casos de trabalho, antes tente a transferência de turno; a ProGrad só cancela se não houver vaga no contraturno.</p>
+<div style="overflow-x: auto">
+<table style="width: 100%; min-width: 640px; border-collapse: collapse; font-size: 15px; line-height: 1.5">
+<thead>
+<tr style="background: #0E1726; color: #FFFFFF; text-align: left">
+<th scope="col" style="padding: 12px 16px; font-weight: 600; width: 26%">Situação</th>
+<th scope="col" style="padding: 12px 16px; font-weight: 600">Documento exigido</th>
+<th scope="col" style="padding: 12px 16px; font-weight: 600; width: 24%">Condição</th>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{excecoes}}" as="x" hint-placeholder-count="3">
+<tr style="border-bottom: 1px solid #E2E6EA; vertical-align: top">
+<th scope="row" style="padding: 14px 16px; text-align: left; font-weight: 700">{{x.s}}</th>
+<td style="padding: 14px 16px; color: #2D3748">{{x.doc}}</td>
+<td style="padding: 14px 16px"><span style="display: inline-block; padding: 2px 8px; background: {{x.bg}}; font-size: 13px; font-weight: 600">{{x.cond}}</span></td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+
+<h2 style="margin: 56px 0 20px; font-family: Anton, sans-serif; font-weight: 400; font-size: 34px; text-transform: uppercase">Trancamento de matrícula</h2>
+<p style="margin: 0 0 20px; color: #2D3748; max-width: 720px">Uma pausa nos estudos sem perder o vínculo com a UFABC. Há dois tipos:</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0; border: 2px solid #0E1726">
+<sc-for list="{{tranc}}" as="tr" hint-placeholder-count="2">
+<div style="padding: 24px; border-right: 1px solid #E2E6EA; display: flex; flex-direction: column; gap: 14px">
+<span style="font-family: Anton, sans-serif; font-size: 26px; text-transform: uppercase; line-height: 1.1">{{tr.t}}</span>
+<sc-for list="{{tr.rows}}" as="rw" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; border-top: 1px solid #E2E6EA; padding-top: 10px">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #4A5568">{{rw.k}}</span>
+<span style="font-size: 17px; font-weight: 600">{{rw.v}}</span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+<p style="margin: 12px 0 0; font-size: 14px; color: #4A5568">Por trabalho, o emprego precisa impedir a presença em todos os turnos. Atestados médicos precisam do código da doença e do período de afastamento.</p>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 64px">
+<a href="Campi.dc.html" style="border: 2px solid #E2E6EA; padding: 20px; text-decoration: none; color: #0E1726; display: flex; flex-direction: column; gap: 4px"><span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #4A5568">← Anterior</span><span style="font-weight: 600; font-size: 17px">Campi e cursos</span></a>
+<a href="Pagina.dc.html" style="border: 2px solid #008BBB; padding: 20px; text-decoration: none; color: #0E1726; display: flex; flex-direction: column; gap: 4px; text-align: right"><span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #006E95">Próxima →</span><span style="font-weight: 600; font-size: 17px">Avaliação e coeficientes</span></a>
+</div>
+</main>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"tema":{"editor":"enum","options":["amarelo","azul"],"default":"amarelo"},"$preview":{"width":1440,"height":2600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const weeks = [{ t: 'Rec.', bg: '#FFF3C2' }];
+    for (let i = 1; i <= 12; i++) weeks.push({ t: 'S' + i, bg: '#EEF1F4' });
+    weeks.push({ t: 'Rec.', bg: '#FFF3C2' });
+    const col = (n) => n + 2;
+    return {
+      tema: this.props.tema ?? 'amarelo',
+      weeks,
+      events: [
+        { label: '1º ajuste', a: col(0), b: col(1), bg: '#FFCC00', fg: '#0E1726', note: 'Recesso' },
+        { label: 'Aulas', a: col(1), b: col(13), bg: '#0E1726', fg: '#FFFFFF', note: '12 semanas' },
+        { label: 'Cancelamento', a: col(1), b: col(2), bg: '#B3261E', fg: '#FFFFFF', note: 'S1' },
+        { label: '2º ajuste (reajuste)', a: col(2), b: col(3), bg: '#008BBB', fg: '#FFFFFF', note: 'S2' },
+        { label: 'Trancamento sem justificativa', a: col(1), b: col(7), bg: '#006633', fg: '#FFFFFF', note: 'Até a 6ª semana' },
+        { label: 'Trancamento com justificativa', a: col(1), b: col(13), bg: '#7FB89A', fg: '#0E1726', note: 'Até o último dia de aula' },
+        { label: 'Matrícula do próximo quadrimestre', a: col(7), b: col(13), bg: '#FFE27A', fg: '#0E1726', note: 'A partir da metade' }
+      ],
+      steps: [
+        { n: '01', t: 'Matrícula', d: 'Você escolhe as disciplinas do próximo quadrimestre. Confira o planejamento de oferta e o catálogo de disciplinas.', when: 'Semanas antes do fim do quadrimestre', c: '#FFCC00' },
+        { n: '02', t: '1º ajuste', d: 'Vagas que sobraram são liberadas por ordem de chegada. Dá para desfazer matrículas.', when: 'Durante o recesso', c: '#006633' },
+        { n: '03', t: 'Cancelamento', d: 'Última chance de largar uma disciplina sem justificativa.', when: 'Até o fim da 1ª semana', c: '#B3261E' },
+        { n: '04', t: '2º ajuste', d: 'Nova rodada de vagas remanescentes. Aqui não é possível largar disciplinas.', when: '2ª semana de aulas', c: '#008BBB' }
+      ],
+      excecoes: [
+        { s: 'Mudança no horário de trabalho presencial', doc: 'Declaração timbrada, assinada e carimbada pela chefia, com a data da alteração (posterior à matrícula).', cond: 'Sem vaga no contraturno', bg: '#E6F4F9' },
+        { s: 'Nova contratação ou estágio', doc: 'Contrato ou termo de compromisso com a jornada e a data de início (posterior à matrícula). E-mail de aprovação não vale.', cond: 'Sem vaga no contraturno', bg: '#E6F4F9' },
+        { s: 'Mães de crianças com até 12 anos incompletos', doc: 'Documento da criança: certidão de nascimento, RG ou comprovante de guarda.', cond: 'Comprovação documental', bg: '#FFF3C2' }
+      ],
+      tranc: [
+        { t: 'Sem justificativa', rows: [{ k: 'Limite', v: 'Até 3 quadrimestres no total' }, { k: 'Prazo', v: 'Até a 6ª semana de aula' }, { k: 'Onde pedir', v: 'SIGAA (Portal do Discente)' }] },
+        { t: 'Com justificativa', rows: [{ k: 'Limite', v: 'Até 6 quadrimestres' }, { k: 'Prazo', v: 'Até o último dia de aula' }, { k: 'Motivos', v: 'Doença, trabalho, maternidade, entre outros' }] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

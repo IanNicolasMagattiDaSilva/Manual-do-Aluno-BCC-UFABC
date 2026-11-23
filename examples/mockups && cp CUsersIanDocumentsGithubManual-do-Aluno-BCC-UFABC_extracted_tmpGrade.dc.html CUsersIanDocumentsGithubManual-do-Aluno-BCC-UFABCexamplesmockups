@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Manual do BCC — Capa do PDF</title>
+<script src="./_runtime/react.js"></script>
+<script src="./_runtime/react-dom.js"></script>
+<script src="./_runtime/support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFFFF}
+</style>
+</helmet>
+<div style="width: 794px; height: 1123px; position: relative; overflow: hidden; background: #FFFFFF; color: #0E1726; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column">
+
+<div style="height: 700px; background: {{t.bg}}; position: relative; overflow: hidden; flex: 0 0 auto">
+<div aria-hidden="true" style="position: absolute; left: 0; top: 0; width: 794px; height: 700px">
+<dc-import name="Wafer" tema="{{ tema }}" w="{{ 794 }}" h="{{ 700 }}" die="{{ 112 }}" ax="{{ 1 }}" ay="{{ 0 }}" seed="{{ 5 }}" fundo="{{ false }}" hint-size="794px,700px"></dc-import>
+</div>
+<div style="position: absolute; left: 72px; right: 72px; bottom: 72px">
+<p style="margin: 0 0 18px; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: 5px; text-transform: uppercase; color: {{t.text}}">&gt; Universidade Federal do ABC</p>
+<h1 style="margin: 0; font-family: Anton, sans-serif; font-weight: 400; font-size: 132px; line-height: 0.92; text-transform: uppercase; color: {{t.title}}">Manual<br>do aluno</h1>
+<p style="margin: 20px 0 0; font-size: 22px; font-weight: 600; color: {{t.text}}">Do BC&amp;T à Ciência da Computação</p>
+</div>
+</div>
+
+<div style="flex: 1 1 auto; padding: 56px 72px 0; display: flex; justify-content: space-between; align-items: flex-start; gap: 32px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: #4A5568">Material produzido por</span>
+<span style="font-size: 20px; font-weight: 600">[SEU NOME]</span>
+<span style="font-size: 14px; color: #4A5568">Graduando(a) em Ciência da Computação</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; text-align: right">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: #4A5568">Conteúdo</span>
+<span style="font-size: 15px">Parte 1 · UFABC</span>
+<span style="font-size: 15px">Parte 2 · BC&amp;T</span>
+<span style="font-size: 15px">Parte 3 · BCC</span>
+</div>
+</div>
+
+<div style="height: 112px; background: #0E1726; color: #FFFFFF; padding: 0 72px; display: flex; align-items: center; justify-content: space-between; flex: 0 0 auto; border-top: 6px solid #006633">
+<dc-import name="Logo" cell="{{ 4 }}" color="#1FA7D9" hint-size="63px,27px"></dc-import>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #D5DCE3">Edição [ANO]</span>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"tema":{"editor":"enum","options":["amarelo","azul"],"default":"amarelo"},"$preview":{"width":794,"height":1123}}'>
+class Component extends DCLogic {
+  theme() {
+    return (this.props.tema ?? 'amarelo') === 'azul'
+      ? { bg: '#008BBB', title: '#FFFFFF', text: '#04222F', }
+      : { bg: '#FFCC00', title: '#0E1726', text: '#0E1726', };
+  }
+  renderVals() {
+    const t = this.theme();
+    return { t, tema: this.props.tema ?? 'amarelo' };
+  }
+}
+</script>
+</body>
+</html>

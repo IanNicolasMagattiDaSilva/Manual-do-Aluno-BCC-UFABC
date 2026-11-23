@@ -1,0 +1,190 @@
+/* ============================================================
+   PRINT.CSS — Estilos para a rota /print + geração de PDF.
+   Importado SOMENTE pelo PrintLayout.vue.
+   Usa Paged.js para paginação avançada (string-set, target-counter,
+   named pages, running elements).
+   ============================================================ */
+
+/* ──────────────────────────────────────────────────────────────
+   @page padrão — todas as páginas que não sobrescrevem abaixo.
+   margin: 2cm garante a área útil A4 recomendada pela ABNT.
+   As zonas @top-* / @bottom-* são regiões marginais do Paged.js;
+   navegadores nativos ignoram (apenas Paged.js / weasyprint as renderizam).
+────────────────────────────────────────────────────────────── */
+@page {
+  size: A4;
+  margin: 2cm;
+
+  /* Cabeçalho esquerdo: nome fixo do manual */
+  @top-left {
+    content: "Manual do Aluno · BCC UFABC";
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+
+  /* Cabeçalho direito: nome da seção atual (vem do string-set abaixo) */
+  @top-right {
+    content: string(section-title);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+
+  /* Rodapé direito: número de página completo */
+  @bottom-right {
+    content: counter(page);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-fg-default);
+    border-top: 1px solid var(--color-border-strong);
+    padding-top: 6px;
+  }
+
+  /* Rodapé esquerdo: "Manual do aluno · <seção>" via string-set */
+  @bottom-left {
+    content: "Manual do aluno · " string(section-label);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+    border-top: 1px solid var(--color-border-strong);
+    padding-top: 6px;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   @page :first — capa (PdfCapa.vue).
+   margin: 0 para sangria total (wafer + faixa escura tocam as bordas).
+   Suprime todos os running headers/footers da primeira página.
+   O Paged.js aplica :first à primeira página física do documento.
+────────────────────────────────────────────────────────────── */
+@page :first {
+  margin: 0;
+
+  @top-left    { content: none; }
+  @top-center  { content: none; }
+  @top-right   { content: none; }
+  @bottom-left   { content: none; }
+  @bottom-center { content: none; }
+  @bottom-right  { content: none; }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   @page section — named page para páginas de conteúdo.
+   Ativada pelo seletor h1[data-pdf-section] { page: section } abaixo.
+   @top-center exibe o título da seção corrente via string-set.
+   @bottom-right exibe "Manual do aluno · página N de T".
+   Substitui os slots de @page padrão para estas páginas.
+────────────────────────────────────────────────────────────── */
+@page section {
+  @top-center {
+    /* string(section-title) é atualizado pelo h1[data-pdf-section] mais próximo */
+    content: string(section-title);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+
+  @bottom-right {
+    /* counter(pages) = total de páginas — requer Paged.js (browsers nativos não suportam) */
+    content: "Manual do aluno · página " counter(page) " de " counter(pages);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-fg-muted);
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   h1[data-pdf-section] — ativa a named page "section" e registra
+   o título para o cabeçalho corrente.
+   break-before: page força nova página a cada seção principal.
+   string-set: captura o texto do h1 para usar em @top-center.
+────────────────────────────────────────────────────────────── */
+h1[data-pdf-section] {
+  page: section;
+  string-set: section-title content();
+  break-before: page;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   [data-section-label] — captura o label curto de seção para o
+   rodapé esquerdo (ex: "Parte 01 · UFABC").
+   Atributo definido em PdfParte.vue via :data-section-label.
+────────────────────────────────────────────────────────────── */
+[data-section-label] {
+  string-set: section-label attr(data-section-label);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Quebra de página forçada — classe utilitária usada nos wrappers
+   de PdfParte.vue e PdfSumario.vue para garantir nova página.
+────────────────────────────────────────────────────────────── */
+.page-break-before {
+  break-before: page;
+}
+
+/* h1 genérico sempre começa nova página (exceto o primeiro filho
+   do contêiner, onde a quebra seria redundante). */
+h1 {
+  break-before: page;
+}
+
+h1:first-child {
+  break-before: avoid;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Evitar quebra dentro de elementos críticos.
+   aside[data-callout] mapeia o componente de callout do manual.
+   table / pre / figure são elementos que não devem ser partidos
+   no meio de uma coluna ou página.
+────────────────────────────────────────────────────────────── */
+table,
+pre,
+figure,
+aside[data-callout],
+blockquote,
+.avoid-break {
+  break-inside: avoid;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Links no PDF — sem sublinhado; azul-escuro legível no papel.
+   color usa var CSS para consistência com o tema.
+────────────────────────────────────────────────────────────── */
+a {
+  color: var(--color-brand-azul-escuro);
+  text-decoration: none;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Sumário paginado — .toc-link::after injeta o número de página
+   destino via target-counter do Paged.js.
+   float: right alinha o número à direita do nome da seção.
+   Funciona apenas com Paged.js; em browsers nativos fica vazio.
+────────────────────────────────────────────────────────────── */
+.toc-link::after {
+  content: target-counter(attr(href), page);
+  float: right;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-fg-muted);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   .no-print — esconde qualquer elemento na saída de impressão.
+   Usado em Header, Sidebar, botões de UI, avisos de stub, etc.
+   !important garante precedência mesmo sobre estilos inline.
+────────────────────────────────────────────────────────────── */
+.no-print {
+  display: none !important;
+}
