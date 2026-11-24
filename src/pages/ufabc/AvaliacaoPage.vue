@@ -13,7 +13,6 @@
  */
 
 import DocLayout from '../_layouts/DocLayout.vue'
-import { PrevNext } from '@features/navigation'
 import type { Tema } from '@shared/config/tokens'
 import type { Grade, Coefficient } from '@entities/course/types'
 
@@ -364,13 +363,5 @@ function statusClass(status: Grade['status']): string {
         sua média antes do fim do quadrimestre.
       </p>
     </aside>
-
-    <!-- Prev/Next -->
-    <template #prevnext>
-      <PrevNext
-        :prev="{ label: 'Matrícula e ajustes', to: '/ufabc/matricula' }"
-        :next="{ label: 'Projetos e oportunidades', to: '/ufabc/projetos' }"
-      />
-    </template>
   </DocLayout>
 </template>

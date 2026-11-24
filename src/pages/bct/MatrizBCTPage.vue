@@ -10,7 +10,6 @@
  */
 
 import DocLayout from '@pages/_layouts/DocLayout.vue'
-import { PrevNext } from '@features/navigation'
 import type { Discipline } from '@entities/course'
 
 // ---------------------------------------------------------------------------
@@ -350,13 +349,5 @@ const totalCreditos = GRADE.flatMap(q => q.disciplinas).reduce((s, d) => s + d.c
         </div>
       </div>
     </section>
-
-    <!-- Prev/Next -->
-    <template #prevnext>
-      <PrevNext
-        :prev="{ label: 'O que é o BC&T', to: '#' }"
-        :next="{ label: 'Quadrimestre ideal', to: '#' }"
-      />
-    </template>
   </DocLayout>
 </template>

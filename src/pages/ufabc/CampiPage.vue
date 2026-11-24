@@ -10,7 +10,6 @@
  */
 
 import DocLayout from '../_layouts/DocLayout.vue'
-import { PrevNext } from '@features/navigation'
 import type { Tema } from '@shared/config/tokens'
 
 withDefaults(defineProps<{ tema?: Tema }>(), {
@@ -228,13 +227,5 @@ withDefaults(defineProps<{ tema?: Tema }>(), {
         </tbody>
       </table>
     </div>
-
-    <!-- Prev/Next -->
-    <template #prevnext>
-      <PrevNext
-        :prev="null"
-        :next="{ label: 'Matrícula e ajustes', to: '/ufabc/matricula' }"
-      />
-    </template>
   </DocLayout>
 </template>

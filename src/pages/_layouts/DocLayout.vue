@@ -16,26 +16,48 @@
  *   tema    — 'amarelo' | 'azul'
  */
 
-import { ref } from 'vue'
-import { Header, Sidebar } from '@features/navigation'
+import { computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { Header, Sidebar, PrevNext } from '@features/navigation'
 import { SearchInput } from '@features/search'
 import { DownloadPdfButton } from '@features/pdf-export'
 import { Hero } from '@widgets/hero'
+import { getPrevNext } from '@shared/lib/content'
 import type { Tema } from '@shared/config/tokens'
 
-withDefaults(defineProps<{
-  title?:   string
-  section?: string
-  parte?:   string
-  tema?:    Tema
+const props = withDefaults(defineProps<{
+  title?:        string
+  section?:      string
+  parte?:        string
+  tema?:         Tema
+  hidePrevNext?: boolean
 }>(), {
-  title:   '',
-  section: 'ufabc',
-  parte:   '',
-  tema:    'amarelo',
+  title:        '',
+  section:      'ufabc',
+  parte:        '',
+  tema:         'amarelo',
+  hidePrevNext: false,
 })
 
 const query = ref('')
+const route = useRoute()
+
+/*
+ * prev/next derivados de content.ts a partir da rota atual. Convertido para
+ * o formato esperado pelo PrevNext.vue ({ label, to }). Se a rota não tiver
+ * entrada em content/, ambos retornam null e o PrevNext some.
+ */
+const nav = computed(() => {
+  const { prev, next } = getPrevNext(route.path)
+  return {
+    prev: prev ? { label: prev.title, to: prev.route } : null,
+    next: next ? { label: next.title, to: next.route } : null,
+  }
+})
+
+const showPrevNext = computed(() =>
+  !props.hidePrevNext && (nav.value.prev !== null || nav.value.next !== null),
+)
 </script>
 
 <template>
@@ -63,8 +85,13 @@ const query = ref('')
           <slot />
         </div>
 
-        <!-- Slot para prev/next (opcional) -->
-        <slot name="prevnext" />
+        <!--
+          prev/next automático a partir de content/. O slot `prevnext`
+          permite override manual se a página tiver navegação customizada.
+        -->
+        <slot name="prevnext">
+          <PrevNext v-if="showPrevNext" :prev="nav.prev" :next="nav.next" />
+        </slot>
       </main>
 
       <!-- TOC (Table of Contents) -->

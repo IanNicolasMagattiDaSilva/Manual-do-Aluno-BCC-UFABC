@@ -256,25 +256,5 @@ function natureLabel(nature: BCCDiscipline['nature']): string {
       </div>
     </section>
 
-    <!-- Prev / next -->
-    <template #prevnext>
-      <nav aria-label="Navegação entre páginas" class="mt-16 flex justify-between gap-4 border-t border-border-subtle pt-8">
-        <RouterLink
-          to="/bcc/grade"
-          class="flex flex-col gap-1 no-underline text-fg-muted hover:text-fg-default group"
-        >
-          <span class="font-mono text-[11px] tracking-[2px] uppercase">Anterior</span>
-          <span class="font-sans text-[15px] font-semibold text-fg-default group-hover:text-brand-azul-escuro">O que é o BCC</span>
-        </RouterLink>
-        <RouterLink
-          to="/bcc/ppc"
-          class="flex flex-col gap-1 no-underline text-right text-fg-muted hover:text-fg-default group"
-        >
-          <span class="font-mono text-[11px] tracking-[2px] uppercase">Próxima</span>
-          <span class="font-sans text-[15px] font-semibold text-fg-default group-hover:text-brand-azul-escuro">Diferenças entre os PPCs</span>
-        </RouterLink>
-      </nav>
-    </template>
-
   </DocLayout>
 </template>

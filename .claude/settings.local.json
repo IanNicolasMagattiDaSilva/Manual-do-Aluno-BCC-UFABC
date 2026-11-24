@@ -6,7 +6,15 @@
       "Bash(cp \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\_extracted_tmp\\\\Header.dc.html\" \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\examples\\\\mockups\\\\\" && cp \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\_extracted_tmp\\\\Hero.dc.html\" \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\examples\\\\mockups\\\\\")",
       "Bash(cp \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\_extracted_tmp\\\\Logo.dc.html\" \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\examples\\\\mockups\\\\\" && cp \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\_extracted_tmp\\\\Main.dc.html\" \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\examples\\\\mockups\\\\\")",
       "Bash(cp \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\_extracted_tmp\\\\Matricula.dc.html\" \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\examples\\\\mockups\\\\\" && cp \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\_extracted_tmp\\\\MatrizBCT.dc.html\" \"C:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\examples\\\\mockups\\\\\")",
-      "PowerShell(Get-ChildItem \"c:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\src\" -Force | ForEach-Object { $bytes = [System.Text.Encoding]::UTF8.GetBytes\\($_.Name\\); \"$\\($_.Name\\) :: $\\([BitConverter]::ToString\\($bytes\\)\\)\" })"
+      "PowerShell(Get-ChildItem \"c:\\\\Users\\\\Ian\\\\Documents\\\\Github\\\\Manual-do-Aluno-BCC-UFABC\\\\src\" -Force | ForEach-Object { $bytes = [System.Text.Encoding]::UTF8.GetBytes\\($_.Name\\); \"$\\($_.Name\\) :: $\\([BitConverter]::ToString\\($bytes\\)\\)\" })",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(npm install *)",
+      "Bash(cat)",
+      "Bash(bash /tmp/strip_prevnext.sh src/pages/ufabc/CampiPage.vue src/pages/ufabc/MatriculaPage.vue src/pages/ufabc/AvaliacaoPage.vue src/pages/ufabc/ProjetosPage.vue src/pages/bct/MatrizBCTPage.vue src/pages/bcc/GradePage.vue src/pages/bcc/PPCPage.vue)",
+      "Bash(npm run *)",
+      "Bash(echo \"exit=$?\")"
     ]
   }
 }

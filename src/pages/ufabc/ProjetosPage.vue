@@ -8,7 +8,6 @@
  */
 
 import DocLayout from '../_layouts/DocLayout.vue'
-import { PrevNext } from '@features/navigation'
 
 interface Projeto {
   titulo:    string
@@ -211,13 +210,5 @@ const PROJETOS: Projeto[] = [
         formais.
       </p>
     </aside>
-
-    <!-- Prev/Next -->
-    <template #prevnext>
-      <PrevNext
-        :prev="{ label: 'Avaliação e coeficientes', to: '/ufabc/avaliacao' }"
-        :next="null"
-      />
-    </template>
   </DocLayout>
 </template>

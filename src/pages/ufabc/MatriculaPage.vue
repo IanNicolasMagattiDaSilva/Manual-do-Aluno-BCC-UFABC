@@ -8,7 +8,6 @@
  */
 
 import DocLayout from '../_layouts/DocLayout.vue'
-import { PrevNext } from '@features/navigation'
 import type { Tema } from '@shared/config/tokens'
 
 withDefaults(defineProps<{ tema?: Tema }>(), {
@@ -261,13 +260,5 @@ const LIMITES: Limite[] = [
         desatenção — e uma disciplina indesejada pode afetar seu coeficiente.
       </p>
     </aside>
-
-    <!-- Prev/Next -->
-    <template #prevnext>
-      <PrevNext
-        :prev="{ label: 'Campi e cursos', to: '/ufabc/campi' }"
-        :next="{ label: 'Avaliação e coeficientes', to: '/ufabc/avaliacao' }"
-      />
-    </template>
   </DocLayout>
 </template>

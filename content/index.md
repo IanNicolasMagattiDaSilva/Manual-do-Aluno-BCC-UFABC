@@ -1,8 +1,10 @@
 ---
 title: Apresentação
 order: 0
-description: Introdução ao Manual do Aluno BCC UFABC.
+route: /
+section: home
 pdf: true
+description: Introdução ao Manual do Aluno BCC UFABC.
 ---
 
 # Apresentação
