@@ -14,7 +14,8 @@
       "Bash(cat)",
       "Bash(bash /tmp/strip_prevnext.sh src/pages/ufabc/CampiPage.vue src/pages/ufabc/MatriculaPage.vue src/pages/ufabc/AvaliacaoPage.vue src/pages/ufabc/ProjetosPage.vue src/pages/bct/MatrizBCTPage.vue src/pages/bcc/GradePage.vue src/pages/bcc/PPCPage.vue)",
       "Bash(npm run *)",
-      "Bash(echo \"exit=$?\")"
+      "Bash(echo \"exit=$?\")",
+      "Bash(git commit *)"
     ]
   }
 }
