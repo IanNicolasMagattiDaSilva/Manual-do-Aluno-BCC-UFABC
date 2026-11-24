@@ -11,7 +11,7 @@ import DocLayout from '../_layouts/DocLayout.vue'
 import { PrevNext } from '@features/navigation'
 import type { Tema } from '@shared/config/tokens'
 
-const props = withDefaults(defineProps<{ tema?: Tema }>(), {
+withDefaults(defineProps<{ tema?: Tema }>(), {
   tema: 'amarelo',
 })
 

@@ -12,14 +12,11 @@
 
 import { computed } from 'vue'
 import { PdfFolio } from '@features/pdf-export'
-import { themes } from '@shared/config/tokens'
 import type { Tema } from '@shared/config/tokens'
 
-const props = withDefaults(defineProps<{ tema?: Tema }>(), {
+withDefaults(defineProps<{ tema?: Tema }>(), {
   tema: 'amarelo',
 })
-
-const t = computed(() => themes[props.tema])
 
 /** Número de quadrimestres exibidos */
 const QUADS = 13

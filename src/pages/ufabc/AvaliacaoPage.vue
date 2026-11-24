@@ -12,13 +12,12 @@
  *   tema — variante de cor do hero: 'amarelo' | 'azul'
  */
 
-import { computed } from 'vue'
 import DocLayout from '../_layouts/DocLayout.vue'
 import { PrevNext } from '@features/navigation'
 import type { Tema } from '@shared/config/tokens'
 import type { Grade, Coefficient } from '@entities/course/types'
 
-const props = withDefaults(defineProps<{ tema?: Tema }>(), {
+withDefaults(defineProps<{ tema?: Tema }>(), {
   tema: 'amarelo',
 })
 

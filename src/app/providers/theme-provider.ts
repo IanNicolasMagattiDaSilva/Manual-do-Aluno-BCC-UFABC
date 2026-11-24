@@ -16,7 +16,7 @@
  */
 
 import type { App, InjectionKey, Ref } from 'vue'
-import { ref, provide, inject } from 'vue'
+import { ref, inject } from 'vue'
 import type { Tema } from '@shared/config/tokens'
 
 export const THEME_KEY: InjectionKey<{

@@ -17,13 +17,13 @@
  */
 
 import { ref } from 'vue'
-import { Header, Sidebar, PrevNext } from '@features/navigation'
+import { Header, Sidebar } from '@features/navigation'
 import { SearchInput } from '@features/search'
 import { DownloadPdfButton } from '@features/pdf-export'
 import { Hero } from '@widgets/hero'
 import type { Tema } from '@shared/config/tokens'
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   title?:   string
   section?: string
   parte?:   string

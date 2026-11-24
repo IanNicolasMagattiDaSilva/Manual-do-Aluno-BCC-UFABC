@@ -19,7 +19,7 @@ interface SidebarSection {
   items: SidebarItem[]
 }
 
-const props = withDefaults(defineProps<{ atual?: string }>(), {
+withDefaults(defineProps<{ atual?: string }>(), {
   atual: '',
 })
 
