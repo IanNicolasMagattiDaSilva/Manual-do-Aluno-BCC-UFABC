@@ -23,6 +23,8 @@ import { expectedPdfPages } from './pdf-shared'
 
 const PREVIEW_URL = process.env['PREVIEW_URL'] ?? 'http://localhost:4173'
 const OUTPUT_PATH = process.env['PDF_OUTPUT']   ?? 'dist/guia.pdf'
+const BASE_RAW    = process.env['VITE_BASE_URL'] ?? '/'
+const BASE_PATH   = BASE_RAW.endsWith('/') ? BASE_RAW : BASE_RAW + '/'
 
 /*
  * Também espelhamos o PDF em public/guia.pdf para que `pnpm dev` sirva o
@@ -33,7 +35,9 @@ const OUTPUT_PATH = process.env['PDF_OUTPUT']   ?? 'dist/guia.pdf'
 const PUBLIC_COPY = 'public/guia.pdf'
 
 async function main() {
-  console.log(`[pdf] Abrindo ${PREVIEW_URL}/print ...`)
+  const printUrl = new URL(`${BASE_PATH}print`.replace(/^\//, ''),
+    PREVIEW_URL.endsWith('/') ? PREVIEW_URL : PREVIEW_URL + '/').toString()
+  console.log(`[pdf] Abrindo ${printUrl} ...`)
 
   const browser = await chromium.launch()
   const page    = await browser.newPage()
@@ -42,7 +46,7 @@ async function main() {
   page.on('pageerror', (e) => pageErrors.push(e.message))
   page.on('console',   (m) => { if (m.type() === 'error') pageErrors.push(m.text()) })
 
-  await page.goto(`${PREVIEW_URL}/print`, { waitUntil: 'networkidle' })
+  await page.goto(printUrl, { waitUntil: 'networkidle' })
 
   console.log('[pdf] Aguardando Paged.js ...')
   await page.waitForFunction(
