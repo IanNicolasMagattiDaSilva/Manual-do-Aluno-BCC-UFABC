@@ -40,12 +40,6 @@ import DocLayout from '../_layouts/DocLayout.vue'
 
 <template>
   <DocLayout title="Bolsas (demo)" parte="Parte 1 · UFABC" section="ufabc" tema="amarelo">
-    <template #toc>
-      <ul class="list-none m-0 p-0">
-        <li><a href="#o-que-e" class="block py-1 text-fg-muted text-[13px] no-underline">O que é</a></li>
-      </ul>
-    </template>
-
     <h2 id="o-que-e">O que é</h2>
     <p>Texto da página escrito direto aqui.</p>
   </DocLayout>

@@ -24,44 +24,6 @@ withDefaults(defineProps<{ tema?: Tema }>(), {
     section="ufabc"
     :tema="tema"
   >
-    <!-- TOC lateral -->
-    <template #toc>
-      <ul class="list-none m-0 p-0 flex flex-col gap-1">
-        <li>
-          <a
-            href="#campi"
-            class="block py-1 text-fg-muted text-[13px] no-underline hover:text-fg-default border-l-2 border-transparent pl-3 hover:border-brand-azul transition-colors"
-          >
-            Campi
-          </a>
-        </li>
-        <li>
-          <a
-            href="#cursos"
-            class="block py-1 text-fg-muted text-[13px] no-underline hover:text-fg-default border-l-2 border-transparent pl-3 hover:border-brand-azul transition-colors"
-          >
-            Cursos oferecidos
-          </a>
-        </li>
-        <li>
-          <a
-            href="#bacharel-interdisciplinar"
-            class="block py-1 text-fg-muted text-[13px] no-underline hover:text-fg-default border-l-2 border-transparent pl-3 hover:border-brand-azul transition-colors"
-          >
-            Bacharelado Interdisciplinar
-          </a>
-        </li>
-        <li>
-          <a
-            href="#cursos-especificos"
-            class="block py-1 text-fg-muted text-[13px] no-underline hover:text-fg-default border-l-2 border-transparent pl-3 hover:border-brand-azul transition-colors"
-          >
-            Cursos específicos
-          </a>
-        </li>
-      </ul>
-    </template>
-
     <!-- Breadcrumb -->
     <p class="m-0 mb-6 font-mono text-[13px] text-fg-muted">
       <RouterLink to="/" class="text-fg-muted no-underline hover:text-fg-default">Início</RouterLink>

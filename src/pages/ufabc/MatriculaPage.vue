@@ -81,44 +81,6 @@ const LIMITES: Limite[] = [
     section="ufabc"
     :tema="tema"
   >
-    <!-- TOC lateral -->
-    <template #toc>
-      <ul class="list-none m-0 p-0 flex flex-col gap-1">
-        <li>
-          <a
-            href="#processo"
-            class="block py-1 text-fg-muted text-[13px] no-underline hover:text-fg-default border-l-2 border-transparent pl-3 hover:border-brand-azul transition-colors"
-          >
-            Processo de matrícula
-          </a>
-        </li>
-        <li>
-          <a
-            href="#limites-creditos"
-            class="block py-1 text-fg-muted text-[13px] no-underline hover:text-fg-default border-l-2 border-transparent pl-3 hover:border-brand-azul transition-colors"
-          >
-            Limites de créditos
-          </a>
-        </li>
-        <li>
-          <a
-            href="#trancamento"
-            class="block py-1 text-fg-muted text-[13px] no-underline hover:text-fg-default border-l-2 border-transparent pl-3 hover:border-brand-azul transition-colors"
-          >
-            Trancamento
-          </a>
-        </li>
-        <li>
-          <a
-            href="#prazos"
-            class="block py-1 text-fg-muted text-[13px] no-underline hover:text-fg-default border-l-2 border-transparent pl-3 hover:border-brand-azul transition-colors"
-          >
-            Prazos e calendário
-          </a>
-        </li>
-      </ul>
-    </template>
-
     <!-- Breadcrumb -->
     <p class="m-0 mb-6 font-mono text-[13px] text-fg-muted">
       <RouterLink to="/" class="text-fg-muted no-underline hover:text-fg-default">Início</RouterLink>

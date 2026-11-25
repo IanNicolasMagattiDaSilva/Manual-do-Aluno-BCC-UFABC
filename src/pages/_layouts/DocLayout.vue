@@ -77,7 +77,7 @@ const showPrevNext = computed(() =>
       <Sidebar :atual="title" />
 
       <!-- Conteúdo principal -->
-      <main class="flex-[999_1_560px] min-w-0 py-10 pb-24 max-w-[760px]">
+      <main class="flex-[999_1_560px] min-w-0 py-10 pb-24 max-w-[920px]">
         <Hero v-if="title" :titulo="title" :parte="parte" :tema="tema" />
 
         <!-- Slot para o conteúdo da página -->
@@ -93,18 +93,6 @@ const showPrevNext = computed(() =>
           <PrevNext v-if="showPrevNext" :prev="nav.prev" :next="nav.next" />
         </slot>
       </main>
-
-      <!-- TOC (Table of Contents) -->
-      <aside
-        aria-label="Nesta página"
-        class="flex-[1_1_200px] max-w-[220px] py-10 text-[14px] hidden lg:block"
-      >
-        <p class="m-0 mb-3 font-mono text-[12px] font-bold tracking-[3px] uppercase text-fg-muted">
-          Nesta página
-        </p>
-        <!-- Slot para o TOC gerado dinamicamente na Fase 2 -->
-        <slot name="toc" />
-      </aside>
     </div>
 
   </div>

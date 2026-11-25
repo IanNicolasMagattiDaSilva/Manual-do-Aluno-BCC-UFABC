@@ -2,9 +2,9 @@
 /**
  * MarkdownPage.vue — Página de documentação gerada a partir de content/*.md.
  *
- * Resolve o arquivo pela rota atual (frontmatter `route`), renderiza o corpo
- * com markdown-it e monta a TOC lateral a partir dos H2/H3. É a mesma fonte
- * usada pelo PDF (PdfMarkdownPages), então web e PDF nunca divergem.
+ * Resolve o arquivo pela rota atual (frontmatter `route`) e renderiza o corpo
+ * com markdown-it. É a mesma fonte usada pelo PDF (PdfMarkdownPages), então
+ * web e PDF nunca divergem.
  *
  * Para criar uma página nova basta adicionar o .md em content/ e uma rota
  * apontando para este componente em src/app/router.ts.
@@ -14,7 +14,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import DocLayout from '@pages/_layouts/DocLayout.vue'
 import { getPageByRoute } from '@shared/lib/content'
-import { renderMarkdown, extractToc } from '@shared/lib/markdown'
+import { renderMarkdown } from '@shared/lib/markdown'
 import type { Tema } from '@shared/config/tokens'
 
 interface SectionMeta {
@@ -53,7 +53,6 @@ const leadHtml = computed(() =>
     : '',
 )
 const html = computed(() => renderMarkdown(parts.value.rest))
-const toc  = computed(() => extractToc(body.value))
 </script>
 
 <template>
@@ -63,20 +62,6 @@ const toc  = computed(() => extractToc(body.value))
     :section="page?.section ?? 'inicio'"
     :tema="meta.tema"
   >
-    <template #toc>
-      <ul class="list-none m-0 p-0 flex flex-col gap-1">
-        <li v-for="item in toc" :key="item.slug">
-          <a
-            :href="`#${item.slug}`"
-            class="block py-1 text-fg-muted text-[13px] no-underline hover:text-fg-default border-l-2 border-transparent hover:border-brand-azul transition-colors"
-            :class="item.level === 3 ? 'pl-6' : 'pl-3'"
-          >
-            {{ item.text }}
-          </a>
-        </li>
-      </ul>
-    </template>
-
     <!-- Breadcrumb -->
     <p class="m-0 mb-6 font-mono text-[13px] text-fg-muted">
       <RouterLink to="/" class="text-fg-muted no-underline hover:text-fg-default">Início</RouterLink>
