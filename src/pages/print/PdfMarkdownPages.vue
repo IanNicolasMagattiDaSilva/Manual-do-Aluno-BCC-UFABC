@@ -1,63 +1,114 @@
 <script setup lang="ts">
 /**
- * PdfMarkdownPages.vue — Composição completa das partes 1-3 do PDF a partir
- * de content/*.md. Agrupa as páginas por `section` (ufabc | bct | bcc) e
- * insere a abertura PdfParte antes das páginas de cada seção.
+ * PdfMarkdownPages.vue — Paginas editoriais v2 do PDF geradas a partir
+ * de content/*.md. Baseado em EPdfTexto, ECallout e ESection do zip.
  *
- * Substitui a composição manual anterior (PdfParte 1 + PdfTexto + PdfParte 2 +
- * PdfParte 3) por uma composição data-driven: basta adicionar um .md com
- * `pdf: true` na pasta correta e ele entra no PDF na posição definida por
- * `order`.
+ * Fluxo:
+ *   1. Agrupa listPdfPages() por secao (ufabc | bct | bcc)
+ *   2. Para cada secao: insere PdfParte (abertura) + N paginas de texto
+ *   3. Cada pagina de texto:
+ *      - Badge amarela X.Y (X = parte, Y = ordem dentro da parte)
+ *      - Eyebrow mono "Parte X . Label"
+ *      - h1 Anton 44px (data-pdf-section) — alimenta o cabecalho corrente
+ *      - Lead (primeiro paragrafo) com border-bottom 1px #0E1726
+ *      - Corpo Markdown com H2 numerados via CSS counter
  *
- * Mantém a paridade visual com PdfTexto.vue (A4 portrait, tipografia 11pt).
- * Markdown é renderizado via @shared/lib/markdown (com anchor, attrs, callouts).
+ * A numeracao de H2 (01, 02, 03) sai de um counter CSS — o Markdown bruto
+ * fica limpo, sem precisar de sintaxe extra.
  */
 
 import { computed } from 'vue'
-import { listPdfPages } from '@shared/lib/content'
+import { listPdfPages, pdfAnchor } from '@shared/lib/content'
 import { renderMarkdown } from '@shared/lib/markdown'
-import { PdfFolio } from '@features/pdf-export'
 import PdfParte from './PdfParte.vue'
 import type { Tema } from '@shared/config/tokens'
 import type { ContentPage } from '@shared/lib/content'
 
-interface SectionGroup {
-  key:    string
-  num:    string
-  label:  string
-  titulo: string
-  tema:   Tema
-  seed:   number
-  pages:  ContentPage[]
+interface PageExpanded extends ContentPage {
+  badge: string
+  html:  string
+  lead:  string
 }
 
-/*
- * Metadados de cada parte. Fonte de verdade local — o tema/seed/titulo da
- * abertura não vem do frontmatter porque é propriedade de apresentação do
- * PDF, não do conteúdo da seção.
- */
+interface SectionGroup {
+  key:       string
+  num:       string
+  label:     string
+  titulo:    string
+  subtitulo: string
+  tema:      Tema
+  seed:      number
+  pages:     PageExpanded[]
+}
+
 const PARTS: Record<string, Omit<SectionGroup, 'pages'>> = {
-  ufabc: { key: 'ufabc', num: '01', label: 'UFABC', titulo: 'A universidade e seus campi',       tema: 'amarelo', seed: 7  },
-  bct:   { key: 'bct',   num: '02', label: 'BC&T',  titulo: 'O Bacharelado em Ciência e Tecnologia', tema: 'amarelo', seed: 11 },
-  bcc:   { key: 'bcc',   num: '03', label: 'BCC',   titulo: 'O Bacharelado em Ciência da Computação', tema: 'azul',    seed: 17 },
+  ufabc: {
+    key: 'ufabc', num: '01', label: 'UFABC',
+    titulo: 'UFABC', subtitulo: 'A universidade e seus campi',
+    tema: 'amarelo', seed: 7,
+  },
+  bct: {
+    key: 'bct', num: '02', label: 'BC&T',
+    titulo: 'BC&T', subtitulo: 'Bacharelado em Ciencia e Tecnologia',
+    tema: 'amarelo', seed: 13,
+  },
+  bcc: {
+    key: 'bcc', num: '03', label: 'BCC',
+    titulo: 'BCC', subtitulo: 'Bacharelado em Ciencia da Computacao',
+    tema: 'azul', seed: 17,
+  },
 }
 
 function stripLeadingH1(body: string): string {
   return body.replace(/^\s*#\s+[^\n]*\n+/, '')
 }
 
+/** Separa o primeiro paragrafo (lead) do restante do corpo. */
+function splitLead(body: string): { lead: string; rest: string } {
+  const bodyNoH1 = stripLeadingH1(body)
+  const trimmed  = bodyNoH1.trimStart()
+  const idx = trimmed.indexOf('\n\n')
+  if (idx < 0) return { lead: trimmed, rest: '' }
+  return {
+    lead: trimmed.slice(0, idx).trim(),
+    rest: trimmed.slice(idx + 2),
+  }
+}
+
+/** Renderiza o lead removendo as tags <p> do markdown-it. */
+function renderLeadInline(md: string): string {
+  const html = renderMarkdown(md).trim()
+  return html
+    .replace(/^<p[^>]*>/, '')
+    .replace(/<\/p>\s*$/, '')
+}
+
 const sections = computed<SectionGroup[]>(() => {
   const groups = new Map<string, SectionGroup>()
+
   for (const p of listPdfPages()) {
-    if (p.route === '/') continue           // home não entra nas partes
+    if (p.route === '/') continue
     const meta = PARTS[p.section]
-    if (!meta) continue                     // seções desconhecidas são ignoradas
+    if (!meta) continue
+
     let g = groups.get(p.section)
     if (!g) { g = { ...meta, pages: [] }; groups.set(p.section, g) }
-    g.pages.push(p)
+
+    const partNum = Number(meta.num)
+    const idx     = g.pages.length + 1
+    const { lead, rest } = splitLead(p.body)
+
+    g.pages.push({
+      ...p,
+      badge: `${partNum}.${idx}`,
+      lead:  renderLeadInline(lead),
+      html:  renderMarkdown(rest),
+    })
   }
-  // ordena as seções pela ordem natural das partes
-  return ['ufabc', 'bct', 'bcc'].map((k) => groups.get(k)).filter(Boolean) as SectionGroup[]
+
+  return ['ufabc', 'bct', 'bcc']
+    .map((k) => groups.get(k))
+    .filter(Boolean) as SectionGroup[]
 })
 </script>
 
@@ -65,136 +116,230 @@ const sections = computed<SectionGroup[]>(() => {
   <template v-for="section in sections" :key="section.key">
     <!-- Abertura da parte -->
     <PdfParte
+      :section="section.key"
       :num="section.num"
       :label="section.label"
       :titulo="section.titulo"
+      :subtitulo="section.subtitulo"
       :tema="section.tema"
       :seed="section.seed"
     />
 
-    <!-- Páginas de conteúdo da parte -->
+    <!-- Paginas editoriais -->
     <article
       v-for="p in section.pages"
       :key="p.file"
-      :data-section-label="`Parte ${section.num} · ${section.label}`"
-      class="pdf-md max-w-[794px] mx-auto bg-bg-default text-fg-default font-sans text-[11pt] leading-[1.65] box-border px-[72px] pt-[64px] pb-[48px]"
+      :id="pdfAnchor(p.route)"
+      :data-section-label="`Parte ${Number(section.num)} · ${section.label}`"
+      :data-folio="`${p.badge} · ${p.title}`"
+      class="pdf-md page-break-before bg-bg-default text-fg-default font-sans text-[17px] leading-[1.65]"
     >
-      <!-- Eyebrow / parte -->
-      <p class="m-0 mb-2 font-mono text-[8pt] font-bold tracking-[3px] uppercase text-brand-azul">
-        Parte {{ section.num }} · {{ section.label }}
-      </p>
+      <!-- Header editorial -->
+      <header class="pdf-md__header" style="padding-top: 14px">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="h-8 px-2 inline-flex items-center bg-brand-amarelo font-display text-[18px] leading-none">
+            {{ p.badge }}
+          </span>
+          <span class="font-mono text-[12px] font-bold tracking-[2.5px] uppercase text-fg-default">
+            Parte {{ Number(section.num) }} · {{ section.label }}
+          </span>
+        </div>
 
-      <!--
-        h1 com data-pdf-section: ativa a named page `section` no print.css
-        e registra o título corrente para o cabeçalho das páginas seguintes.
-        O corpo Markdown entra sem seu h1 (duplicaria o título do frontmatter).
-      -->
-      <h1
-        data-pdf-section
-        class="m-0 mb-6 font-display font-normal text-[36pt] leading-[1.05] uppercase text-fg-default"
-      >
-        {{ p.title }}
-      </h1>
+        <h1
+          data-pdf-section
+          class="m-0 font-display font-normal text-[44px] leading-[1.05] uppercase tracking-[0.3px] text-fg-default"
+        >
+          {{ p.title }}
+        </h1>
 
-      <!-- Linha decorativa sob o título -->
-      <div class="w-16 h-1 bg-brand-amarelo mb-8" />
+        <p
+          v-if="p.lead"
+          class="pdf-md__lead mt-[14px] mb-0 pb-5 text-[17px] leading-[1.55]"
+          style="color: #2D3748; border-bottom: 1px solid #0E1726"
+          v-html="p.lead"
+        />
+      </header>
 
-      <!-- Corpo Markdown renderizado -->
-      <div class="markdown-body" v-html="renderMarkdown(stripLeadingH1(p.body))" />
-
-      <!-- Rodapé da seção -->
-      <PdfFolio
-        :secao="`Parte ${section.num} · ${section.label}`"
-        :num="String(p.order).padStart(2, '0')"
-        :w="650"
-      />
+      <!-- Corpo Markdown -->
+      <div class="pdf-md__body mt-6" v-html="p.html" />
     </article>
   </template>
 </template>
 
 <style scoped>
 /*
- * Tipografia do conteúdo gerado pelo markdown-it. Pensado para A4:
- *   - h2/h3 com Anton, uppercase
- *   - parágrafos em fg-strong para contraste tipográfico
- *   - callouts (aside[data-callout]) com borda colorida por tipo
+ * Tipografia editorial v2 aplicada ao conteudo gerado pelo markdown-it.
+ * :deep necessario porque o HTML entra via v-html (nao e scoped-friendly).
+ *
+ * Numeracao de H2 usa CSS counter: gerado pelo renderer sem tocar no Markdown.
  */
-.markdown-body :deep(h2) {
-  margin:          2rem 0 0.75rem;
-  font-family:     var(--font-display);
-  font-weight:     400;
-  font-size:       18pt;
-  line-height:     1.1;
-  text-transform:  uppercase;
-  letter-spacing:  0.3px;
-  color:           var(--color-fg-default);
+
+.pdf-md__body {
+  counter-reset: pdf-h2;
 }
 
-.markdown-body :deep(h3) {
-  margin:          1.5rem 0 0.5rem;
-  font-family:     var(--font-sans);
-  font-weight:     700;
-  font-size:       12pt;
-  line-height:     1.25;
-  color:           var(--color-fg-default);
+/* H2 numerado — numero verde + Anton 30px uppercase, com border-top */
+.pdf-md__body :deep(h2) {
+  counter-increment: pdf-h2;
+  margin:            44px 0 0;
+  padding-top:       20px;
+  border-top:        1px solid var(--color-border-subtle);
+  display:           flex;
+  align-items:       baseline;
+  gap:               14px;
+  font-family:       var(--font-display);
+  font-weight:       400;
+  font-size:         30px;
+  line-height:       1.1;
+  letter-spacing:    0.3px;
+  text-transform:    uppercase;
+  color:             var(--color-fg-default);
 }
 
-.markdown-body :deep(p) {
-  margin:          0 0 0.75rem;
-  color:           var(--color-fg-strong);
+.pdf-md__body :deep(h2::before) {
+  content:     counter(pdf-h2, decimal-leading-zero);
+  font-family: var(--font-mono);
+  font-size:   13px;
+  font-weight: 700;
+  color:       var(--color-brand-verde);
+  min-width:   28px;
+  flex-shrink: 0;
 }
 
-.markdown-body :deep(ul),
-.markdown-body :deep(ol) {
-  margin:          0 0 0.75rem;
-  padding-left:    1.25rem;
-  color:           var(--color-fg-strong);
+/* Links de âncora (markdown-it-anchor) não devem colorir os títulos */
+.pdf-md__body :deep(h2 a),
+.pdf-md__body :deep(h3 a) { color: inherit; }
+
+/* H3 — Inter 18 600, sem uppercase */
+.pdf-md__body :deep(h3) {
+  margin:      28px 0 8px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size:   18px;
+  line-height: 1.35;
+  color:       var(--color-fg-default);
 }
 
-.markdown-body :deep(li)     { margin: 0.25rem 0; }
-.markdown-body :deep(strong) { color: var(--color-fg-default); }
+.pdf-md__body :deep(p) {
+  margin: 20px 0 0;
+  color:  #1F2937;
+}
 
-.markdown-body :deep(table) {
+.pdf-md__body :deep(ul),
+.pdf-md__body :deep(ol) {
+  margin:       20px 0 0;
+  padding-left: 22px;
+  color:        #1F2937;
+}
+.pdf-md__body :deep(li)     { margin: 4px 0; }
+.pdf-md__body :deep(strong) { color: var(--color-fg-default); font-weight: 600; }
+.pdf-md__body :deep(a)      { color: #006E95; text-decoration: none; }
+
+/* Tabelas editoriais v2 — header leve com border-bottom escuro */
+.pdf-md__body :deep(table) {
   width:           100%;
   border-collapse: collapse;
-  font-size:       10pt;
-  margin:          1rem 0 1.5rem;
+  margin:          28px 0 0;
+  font-size:       15px;
+  line-height:     1.5;
   break-inside:    avoid;
 }
 
-.markdown-body :deep(th) {
+.pdf-md__body :deep(thead th) {
   text-align:      left;
-  padding:         0.4rem 0.6rem;
-  background:      var(--color-fg-default);
-  color:           var(--color-bg-default);
+  padding:         0 12px 10px 0;
   font-family:     var(--font-mono);
-  font-size:       8pt;
+  font-size:       11px;
+  font-weight:     700;
   letter-spacing:  2px;
   text-transform:  uppercase;
-  font-weight:     600;
+  color:           #5A6472;
+  border-bottom:   1px solid var(--color-fg-default);
+  background:      transparent;
+}
+.pdf-md__body :deep(thead th:not(:first-child)) { padding-left: 12px; }
+
+.pdf-md__body :deep(tbody td) {
+  padding:       11px 12px 11px 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+  color:         #1F2937;
+}
+.pdf-md__body :deep(tbody td:not(:first-child)) { padding-left: 12px; }
+
+/* Callouts v2 — stripe 3px, label em mono, sem fundo */
+.pdf-md__body :deep(aside[data-callout]) {
+  margin:         28px 0 0;
+  padding:        4px 0 4px 18px;
+  border-left:    3px solid var(--color-brand-amarelo);
+  background:     transparent;
+  display:        flex;
+  flex-direction: column;
+  gap:            4px;
+  break-inside:   avoid;
+}
+.pdf-md__body :deep(aside[data-callout] > *) { margin: 0; }
+.pdf-md__body :deep(aside[data-callout] p) {
+  font-size:   16px;
+  line-height: 1.6;
+  color:       #1F2937;
 }
 
-.markdown-body :deep(td) {
-  padding:         0.4rem 0.6rem;
-  border-bottom:   1px solid var(--color-border-subtle);
+/* Label puxada por ::before, cor e texto variam por tipo */
+.pdf-md__body :deep(aside[data-callout]::before) {
+  display:        block;
+  font-family:    var(--font-mono);
+  font-size:      11px;
+  font-weight:    700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
-.markdown-body :deep(tr:nth-child(even) td) {
-  background:      var(--color-bg-surface);
-}
+.pdf-md__body :deep(aside[data-callout="note"])              { border-left-color: #A0AAB4; }
+.pdf-md__body :deep(aside[data-callout="note"]::before)      { content: 'Observacao'; color: #4A5568; }
+.pdf-md__body :deep(aside[data-callout="tip"])               { border-left-color: var(--color-brand-amarelo); }
+.pdf-md__body :deep(aside[data-callout="tip"]::before)       { content: 'Dica';       color: var(--color-fg-default); }
+.pdf-md__body :deep(aside[data-callout="warning"])           { border-left-color: var(--color-status-erro); }
+.pdf-md__body :deep(aside[data-callout="warning"]::before)   { content: 'Atencao';    color: var(--color-status-erro); }
+.pdf-md__body :deep(aside[data-callout="important"])         { border-left-color: var(--color-brand-azul); }
+.pdf-md__body :deep(aside[data-callout="important"]::before) { content: 'Importante'; color: var(--color-brand-azul-escuro); }
+.pdf-md__body :deep(aside[data-callout="caution"])           { border-left-color: var(--color-status-erro); }
+.pdf-md__body :deep(aside[data-callout="caution"]::before)   { content: 'Atencao';    color: var(--color-status-erro); }
 
-.markdown-body :deep(aside[data-callout]) {
-  margin:          1rem 0;
-  padding:         0.75rem 1rem;
-  border-left:     4px solid var(--color-brand-azul);
-  background:      var(--color-bg-azul-soft);
-  break-inside:    avoid;
+/* Caixa "Dica" amarela cheia (v1/v2) */
+.pdf-md__body :deep(aside[data-callout="tip"]) {
+  padding:     16px 20px;
+  border-left: 0;
+  background:  var(--color-brand-amarelo);
+  flex-direction: row;
+  gap:         14px;
+  align-items: baseline;
 }
-.markdown-body :deep(aside[data-callout] > p:last-child) { margin-bottom: 0; }
+.pdf-md__body :deep(aside[data-callout="tip"]::before) { content: '// Dica'; flex-shrink: 0; }
+.pdf-md__body :deep(aside[data-callout="tip"] p) { color: var(--color-fg-default); font-weight: 500; }
 
-.markdown-body :deep(aside[data-callout="warning"])   { border-left-color: #B45309; background: #FEF3C7; }
-.markdown-body :deep(aside[data-callout="caution"])   { border-left-color: var(--color-status-erro); background: #FEE2E2; }
-.markdown-body :deep(aside[data-callout="important"]) { border-left-color: var(--color-brand-verde); background: #E6F4EC; }
-.markdown-body :deep(aside[data-callout="tip"])       { border-left-color: var(--color-brand-azul-escuro); background: var(--color-bg-azul-soft); }
-.markdown-body :deep(aside[data-callout="note"])      { border-left-color: var(--color-fg-muted); background: var(--color-bg-surface); }
+/* Selos de conceito em tabelas */
+.pdf-md__body :deep(.selo) {
+  display: inline-block; min-width: 22px; padding: 2px 0; text-align: center;
+  font: 700 13px/1.2 var(--font-mono); color: #fff; background: var(--color-brand-verde);
+}
+.pdf-md__body :deep(.selo-d) { background: var(--color-brand-amarelo); color: var(--color-fg-default); }
+.pdf-md__body :deep(.selo-f),
+.pdf-md__body :deep(.selo-o) { background: var(--color-status-erro); }
+.pdf-md__body :deep(.selo-i) { background: var(--color-border-subtle); color: var(--color-fg-default); }
+
+/* Cartões CR / CA / CP */
+.pdf-md__body :deep(.md-cards) {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  margin: 24px 0 0; break-inside: avoid;
+}
+.pdf-md__body :deep(.md-card) {
+  padding: 12px 14px 14px; background: var(--color-bg-surface);
+  border-top: 4px solid var(--color-brand-azul);
+}
+.pdf-md__body :deep(.md-card[data-card="CA"]) { border-top-color: var(--color-brand-verde); }
+.pdf-md__body :deep(.md-card[data-card="CP"]) { border-top-color: var(--color-brand-amarelo); }
+.pdf-md__body :deep(.md-card p) { margin: 0; }
+.pdf-md__body :deep(.md-card__sigla) { font: 400 34px/1.1 var(--font-display); color: var(--color-fg-default); }
+.pdf-md__body :deep(.md-card__sub) { margin-top: 6px !important; font: 700 13px/1.3 var(--font-sans); color: var(--color-fg-default); }
+.pdf-md__body :deep(.md-card p:last-child:not(.md-card__sigla):not(.md-card__sub)) { margin-top: 6px; font-size: 13px; line-height: 1.5; color: #4A5568; }
 </style>

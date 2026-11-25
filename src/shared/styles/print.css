@@ -13,49 +13,58 @@
 ────────────────────────────────────────────────────────────── */
 @page {
   size: A4;
-  margin: 2cm;
+  margin: 2.5cm 1.9cm 2.2cm;
 
-  /* Cabeçalho esquerdo: nome fixo do manual */
+  /* Cabeçalho: "MANUAL DO ALUNO" à esquerda, "PARTE X · ÁREA" à direita (v2). */
   @top-left {
-    content: "Manual do Aluno · BCC UFABC";
+    content: "Manual do aluno";
     font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 2px;
+    font-size: 11px;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--color-fg-muted);
+    color: #5A6472;
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding-bottom: 10px;
+    vertical-align: bottom;
   }
 
-  /* Cabeçalho direito: nome da seção atual (vem do string-set abaixo) */
   @top-right {
-    content: string(section-title);
+    content: string(section-label);
     font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 2px;
+    font-size: 11px;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--color-fg-muted);
+    color: #5A6472;
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding-bottom: 10px;
+    vertical-align: bottom;
   }
 
-  /* Rodapé direito: número de página completo */
+  /* Rodapé esquerdo: "1.4 · Título da página" (v2). */
+  @bottom-left {
+    content: string(folio);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: #5A6472;
+    border-top: 1px solid var(--color-border-subtle);
+    padding-top: 12px;
+    vertical-align: top;
+  }
+
+  /* Rodapé direito: quadrado amarelo + número da página. */
   @bottom-right {
     content: counter(page);
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--color-fg-default);
-    border-top: 1px solid var(--color-border-strong);
-    padding-top: 6px;
-  }
-
-  /* Rodapé esquerdo: "Manual do aluno · <seção>" via string-set */
-  @bottom-left {
-    content: "Manual do aluno · " string(section-label);
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--color-fg-muted);
-    border-top: 1px solid var(--color-border-strong);
-    padding-top: 6px;
+    border-top: 1px solid var(--color-border-subtle);
+    padding-top: 12px;
+    padding-left: 16px;
+    vertical-align: top;
+    text-align: right;
+    background: linear-gradient(#FFCC00, #FFCC00) no-repeat right 28px top 16px / 7px 7px;
   }
 }
 
@@ -77,42 +86,43 @@
 }
 
 /* ──────────────────────────────────────────────────────────────
-   @page section — named page para páginas de conteúdo.
-   Ativada pelo seletor h1[data-pdf-section] { page: section } abaixo.
-   @top-center exibe o título da seção corrente via string-set.
-   @bottom-right exibe "Manual do aluno · página N de T".
-   Substitui os slots de @page padrão para estas páginas.
+   @page opener — abertura de parte, FULL-BLEED. Margem zero para a
+   banda amarela e wafer tocarem as bordas. Sem running headers nem
+   rodapé — o design interno do PdfParte já faz esse papel.
 ────────────────────────────────────────────────────────────── */
-@page section {
-  @top-center {
-    /* string(section-title) é atualizado pelo h1[data-pdf-section] mais próximo */
-    content: string(section-title);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--color-fg-muted);
-  }
+@page opener {
+  margin: 0;
 
-  @bottom-right {
-    /* counter(pages) = total de páginas — requer Paged.js (browsers nativos não suportam) */
-    content: "Manual do aluno · página " counter(page) " de " counter(pages);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--color-fg-muted);
-  }
+  @top-left      { content: none; }
+  @top-center    { content: none; }
+  @top-right     { content: none; }
+  @bottom-left   { content: none; }
+  @bottom-center { content: none; }
+  @bottom-right  { content: none; }
+}
+
+.pdf-opener {
+  page: opener;
+}
+
+/* Grade curricular — A4 paisagem (named page). */
+@page landscape {
+  size: A4 landscape;
+  margin: 2cm 1.6cm 1.8cm;
+}
+[data-orientation="landscape"] {
+  page: landscape;
 }
 
 /* ──────────────────────────────────────────────────────────────
-   h1[data-pdf-section] — ativa a named page "section" e registra
-   o título para o cabeçalho corrente.
-   break-before: page força nova página a cada seção principal.
-   string-set: captura o texto do h1 para usar em @top-center.
+   h1[data-pdf-section] — registra o título para o cabeçalho
+   corrente via string-set. NÃO altera `page`: mudar o named page
+   dispara um page break automático (CSS Paged Media), fatiando o
+   artigo em páginas extras. Breaks são controlados exclusivamente
+   pela classe .page-break-before no wrapper da página.
 ────────────────────────────────────────────────────────────── */
 h1[data-pdf-section] {
-  page: section;
   string-set: section-title content();
-  break-before: page;
 }
 
 /* ──────────────────────────────────────────────────────────────
@@ -123,23 +133,17 @@ h1[data-pdf-section] {
 [data-section-label] {
   string-set: section-label attr(data-section-label);
 }
+[data-folio] {
+  string-set: folio attr(data-folio);
+}
 
 /* ──────────────────────────────────────────────────────────────
    Quebra de página forçada — classe utilitária usada nos wrappers
-   de PdfParte.vue e PdfSumario.vue para garantir nova página.
+   de todas as páginas do PDF (PdfParte, PdfSumario, PdfMarkdownPages,
+   PdfTabela, PdfGrade). Fonte única de page break no documento.
 ────────────────────────────────────────────────────────────── */
 .page-break-before {
   break-before: page;
-}
-
-/* h1 genérico sempre começa nova página (exceto o primeiro filho
-   do contêiner, onde a quebra seria redundante). */
-h1 {
-  break-before: page;
-}
-
-h1:first-child {
-  break-before: avoid;
 }
 
 /* ──────────────────────────────────────────────────────────────
@@ -173,11 +177,12 @@ a {
    Funciona apenas com Paged.js; em browsers nativos fica vazio.
 ────────────────────────────────────────────────────────────── */
 .toc-link::after {
-  content: target-counter(attr(href), page);
-  float: right;
+  content: target-counter(attr(href), page, decimal-leading-zero);
+  order: 2;
   font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--color-fg-muted);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-fg-default);
 }
 
 /* ──────────────────────────────────────────────────────────────
@@ -188,3 +193,37 @@ a {
 .no-print {
   display: none !important;
 }
+
+/* ──────────────────────────────────────────────────────────────
+   Esconde o conteúdo original (.print-root) no @media print.
+   Paged.js clona o conteúdo de .print-root para dentro de .pagedjs_pages,
+   mas o original permanece no DOM. Sem esta regra, o Chromium renderiza
+   AMBOS no PDF, resultando em páginas duplicadas.
+   Alvo preciso: .print-root dentro de #app (mantém #app e outros
+   wrappers visíveis caso pagedjs_pages esteja aninhado neles).
+────────────────────────────────────────────────────────────── */
+
+
+/* ──────────────────────────────────────────────────────────────
+   Reset de geometria web dentro do print.
+   Os componentes de PDF foram desenhados também para preview na web
+   (`max-w-[794px]`, `mx-auto`, `min-h-screen`). Essas utilitárias
+   assumem viewport, não @page, e no Paged.js causam:
+     - overflow horizontal (794px > área útil de ~643px pós-margem 2cm)
+     - páginas extras em branco (min-h-screen força altura de viewport)
+   Neutralizamos dentro de .print-root para a @page voltar a controlar
+   a geometria. O ! garante precedência sobre as utilitárias inline.
+────────────────────────────────────────────────────────────── */
+.print-root article {
+  max-width:  none !important;
+  margin:     0 !important;
+  min-height: 0 !important;
+  width:      100% !important;
+  box-sizing: border-box;
+}
+
+/*
+ * PdfParte (.pdf-opener) herda os mesmos resets acima — width 100% do content
+ * area da @page opener, sem min-height. O design interno (banda amarela + ol)
+ * é fluido e se adapta à largura disponível.
+ */

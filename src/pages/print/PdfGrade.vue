@@ -11,7 +11,6 @@
  */
 
 import { computed } from 'vue'
-import { PdfFolio } from '@features/pdf-export'
 import type { Tema } from '@shared/config/tokens'
 
 withDefaults(defineProps<{ tema?: Tema }>(), {
@@ -19,7 +18,7 @@ withDefaults(defineProps<{ tema?: Tema }>(), {
 })
 
 /** Número de quadrimestres exibidos */
-const QUADS = 13
+const QUADS = 15
 
 type Tipo = 'obrig' | 'optativa' | 'extensao' | 'tcc'
 
@@ -28,7 +27,7 @@ interface Disciplina {
   nome:      string
   cred:      number
   tipo:      Tipo
-  quad:      number  // 1–13
+  quad:      number  // 1–15
 }
 
 /** Grade BCC PPC 2023 — disciplinas obrigatórias e marcos principais */
@@ -95,7 +94,6 @@ const porQuad = computed(() => {
   return mapa
 })
 
-const quads = computed(() => Array.from({ length: QUADS }, (_, i) => i + 1))
 
 /** Total de créditos BCC (Q4–Q13) */
 const totalCredsBcc = computed(() =>
@@ -104,131 +102,81 @@ const totalCredsBcc = computed(() =>
     .reduce((s, d) => s + d.cred, 0),
 )
 
-type TipoCls = Record<Tipo, string>
-const tipoCls: TipoCls = {
-  obrig:    'bg-bg-azul-soft border-l-4 border-brand-azul',
-  optativa: 'bg-bg-surface   border-l-4 border-brand-azul-claro',
-  extensao: 'bg-bg-default   border-l-4 border-brand-verde',
-  tcc:      'bg-bg-default   border-l-4 border-brand-azul-escuro',
-}
+const ANOS = [1, 2, 3, 4, 5]
+const quadsDoAno = (ano: number) => [0, 1, 2].map(k => (ano - 1) * 3 + k + 1)
 
-type LegItem = { tipo: Tipo; label: string }
-const legenda: LegItem[] = [
-  { tipo: 'obrig',    label: 'Obrigatória BCC' },
-  { tipo: 'optativa', label: 'Optativa livre' },
-  { tipo: 'extensao', label: 'Extensão' },
-  { tipo: 'tcc',      label: 'TCC / PGC' },
+const COR: Record<Tipo, string> = {
+  obrig:    'var(--color-brand-azul)',
+  optativa: '#A0AAB4',
+  extensao: 'var(--color-brand-verde)',
+  tcc:      'var(--color-brand-amarelo)',
+}
+const COR_BCT = 'var(--color-fg-default)'
+/** Q1–Q3 são BC&T (obrigatórias do BC&T, em preto). */
+const corDe = (d: Disciplina) => (d.quad <= 3 ? COR_BCT : COR[d.tipo])
+
+const legenda = [
+  { cor: COR_BCT,          label: 'Obrigatória BC&T' },
+  { cor: COR.obrig,        label: 'Obrigatória BCC' },
+  { cor: COR.extensao,     label: 'Extensão' },
+  { cor: COR.optativa,     label: 'Optativa / livre' },
+  { cor: COR.tcc,          label: 'TCC' },
 ]
 </script>
 
 <template>
-  <!-- data-orientation="landscape" → print.css aplica @page landscape a esta seção -->
+  <!-- A4 retrato: 5 colunas (uma por ano), 3 quadrimestres por coluna. -->
   <article
-    data-orientation="landscape"
-    class="max-w-[1123px] mx-auto bg-bg-default text-fg-default font-sans text-[9pt] leading-[1.5] box-border px-[56px] pt-[48px] pb-[40px]"
+    data-section-label="Parte 3 · BCC"
+    data-folio="Grade curricular sugerida"
+    class="pdf-grade page-break-before"
   >
-    <!-- Cabeçalho da página -->
-    <div class="flex items-end justify-between mb-5">
+    <header class="pdf-grade__head">
       <div>
-        <p class="m-0 mb-1 font-mono text-[7pt] font-bold tracking-[3px] uppercase text-brand-azul">
-          Parte 3 · BCC
-        </p>
-        <h1
-          data-pdf-section
-          class="m-0 font-display font-normal text-[28pt] leading-[1.0] uppercase text-fg-default"
-        >
-          Grade Curricular BCC — PPC 2023
-        </h1>
-      </div>
-      <div class="text-right">
-        <p class="m-0 font-mono text-[8pt] text-fg-muted">
-          Total BCC (Q4–Q13): <strong class="text-fg-default">{{ totalCredsBcc }} créditos</strong>
-        </p>
-        <p class="m-0 font-mono text-[7.5pt] text-fg-muted">
-          13 quadrimestres ideais · inclui BC&amp;T (Q1–Q3)
+        <h1 data-pdf-section class="pdf-grade__title">Grade curricular sugerida · PPC 2023</h1>
+        <p class="pdf-grade__sub">
+          {{ QUADS }} quadrimestres (5 anos) recomendados · total BCC (Q4–Q13): {{ totalCredsBcc }} créditos
         </p>
       </div>
-    </div>
+      <ul class="pdf-grade__legend">
+        <li v-for="l in legenda" :key="l.label">
+          <i :style="{ background: l.cor }" />{{ l.label }}
+        </li>
+      </ul>
+    </header>
 
-    <!-- Linha decorativa -->
-    <div class="w-16 h-1 bg-brand-amarelo mb-5" />
-
-    <!-- Legenda -->
-    <div class="flex gap-5 mb-5 flex-wrap">
-      <template v-for="item in legenda" :key="item.tipo">
-        <div class="flex items-center gap-2 text-[8pt] text-fg-muted">
-          <span
-            class="inline-block w-3 h-3 shrink-0"
-            :class="tipoCls[item.tipo].replace(/border-l-4\s+border-\S+/, '').trim()"
-            :style="{
-              borderLeft: `4px solid var(--color-${
-                item.tipo === 'obrig'    ? 'brand-azul' :
-                item.tipo === 'optativa'? 'brand-azul-claro' :
-                item.tipo === 'extensao'? 'brand-verde' :
-                                          'brand-azul-escuro'
-              })`
-            }"
-          />
-          {{ item.label }}
-        </div>
-      </template>
-    </div>
-
-    <!-- Grade: 13 colunas (uma por quadrimestre) -->
-    <div
-      class="grid gap-x-2 gap-y-0"
-      :style="{ gridTemplateColumns: `repeat(${QUADS}, 1fr)` }"
-    >
-      <!-- Rótulos de quadrimestre -->
-      <template v-for="q in quads" :key="`h-${q}`">
-        <div
-          class="pb-[6px]"
-          :class="q <= 3 ? 'border-b-2 border-brand-verde' : 'border-b-2 border-brand-azul'"
-        >
-          <span
-            class="font-mono text-[7pt] font-bold tracking-[1px] uppercase block text-center"
-            :class="q <= 3 ? 'text-brand-verde' : 'text-brand-azul'"
+    <div class="pdf-grade__years">
+      <section v-for="ano in ANOS" :key="ano" class="pdf-grade__year">
+        <h2>{{ ano }}º ano</h2>
+        <div v-for="q in quadsDoAno(ano)" :key="q" class="pdf-grade__quad">
+          <p class="pdf-grade__qlabel">{{ q }}º quad.</p>
+          <p
+            v-for="d in porQuad.get(q)"
+            :key="d.codigo"
+            class="pdf-grade__disc"
+            :class="{ 'pdf-grade__disc--tcc': d.tipo === 'tcc' }"
+            :style="{ borderTopColor: corDe(d) }"
           >
-            Q{{ q }}
-          </span>
-          <span
-            class="font-mono text-[6.5pt] block text-center"
-            :class="q <= 3 ? 'text-brand-verde' : 'text-fg-muted'"
-          >
-            {{ q <= 3 ? 'BC&T' : '' }}
-          </span>
+            {{ d.nome }}
+          </p>
         </div>
-      </template>
-
-      <!-- Células de disciplinas por coluna (quadrimestre) -->
-      <template v-for="q in quads" :key="`col-${q}`">
-        <div class="flex flex-col gap-[4px] pt-[6px]">
-          <template v-for="disc in porQuad.get(q)" :key="disc.codigo">
-            <div
-              class="px-[5px] py-[4px] text-[7.5pt] [break-inside:avoid]"
-              :class="tipoCls[disc.tipo]"
-            >
-              <span class="font-mono text-[6.5pt] text-fg-muted block leading-[1.3]">
-                {{ disc.codigo }}
-              </span>
-              <span class="text-fg-default leading-[1.35] block">
-                {{ disc.nome }}
-              </span>
-              <span class="font-mono text-[6pt] text-fg-muted block mt-[2px]">
-                {{ disc.cred }} cr.
-              </span>
-            </div>
-          </template>
-        </div>
-      </template>
+      </section>
     </div>
-
-    <!-- Nota de rodapé e folio -->
-    <p class="mt-5 mb-4 text-[7.5pt] text-fg-muted border-t border-border-subtle pt-2">
-      Disciplinas do BC&T (Q1–Q3) representam créditos que são integralmente aproveitados no BCC.
-      Grade simplificada para fins ilustrativos; verificar SIGAA para a grade oficial vigente.
-    </p>
-
-    <PdfFolio secao="Parte 3 · BCC" num="15" :w="1011" />
   </article>
 </template>
+
+<style scoped>
+.pdf-grade { font-family: var(--font-sans); color: var(--color-fg-default); }
+.pdf-grade__head { display: flex; flex-direction: column; gap: 12px; margin-bottom: 22px; }
+.pdf-grade__title { margin: 0; font: 400 40px/1.05 var(--font-display); text-transform: uppercase; }
+.pdf-grade__sub { margin: 6px 0 0; font-size: 11px; color: #4A5568; }
+.pdf-grade__legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0; padding: 0; list-style: none; font-size: 10px; }
+.pdf-grade__legend li { display: inline-flex; align-items: center; gap: 6px; }
+.pdf-grade__legend i { width: 9px; height: 9px; display: inline-block; }
+.pdf-grade__years { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.pdf-grade__year h2 { margin: 0 0 8px; padding-bottom: 5px; border-bottom: 2px solid var(--color-fg-default); font: 400 19px/1 var(--font-display); text-transform: uppercase; }
+.pdf-grade__quad { margin-bottom: 12px; padding: 8px 7px 6px; background: #F3F5F7; break-inside: avoid; min-height: 120px; }
+.pdf-grade__qlabel { margin: 0 0 3px; font: 700 10px/1.2 var(--font-mono); }
+.pdf-grade__disc { margin: 0; padding: 4px 0 4px 2px; border-top: 2px solid; font-size: 9px; line-height: 1.25; color: #2D3748; }
+.pdf-grade__disc--tcc { background: var(--color-brand-amarelo); font-weight: 700; color: var(--color-fg-default); }
+</style>

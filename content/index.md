@@ -9,10 +9,12 @@ description: Introdução ao Manual do Aluno BCC UFABC.
 
 # Apresentação
 
-Bem-vindo ao **Manual do Aluno** do Bacharelado em Ciência da Computação (BCC) da UFABC.
+Bem-vindo ao **Manual do Aluno** do Bacharelado em Ciência da Computação (BCC)
+da UFABC.
 
-Este manual reúne o que você precisa saber para navegar pela sua trajetória acadêmica:
-desde a estrutura da universidade e o BC&T até o BCC e a conclusão do curso.
+Este manual reúne o que você precisa saber para navegar pela sua trajetória
+acadêmica: desde a estrutura da universidade e o BC&T até o BCC e a conclusão
+do curso.
 
 ## Como usar este manual
 
@@ -25,6 +27,6 @@ desde a estrutura da universidade e o BC&T até o BCC e a conclusão do curso.
 
 O manual está dividido em três partes:
 
-1. **UFABC** — Visão geral da universidade, matrículas, avaliações e oportunidades.
-2. **BC&T** — O Bacharelado em Ciência e Tecnologia, pré-requisito para o BCC.
-3. **BCC** — O Bacharelado em Ciência da Computação: grade, PPC, estágio e TCC.
+1. **UFABC** — a universidade, campi, matrícula, avaliação e oportunidades.
+2. **BC&T** — o Bacharelado em Ciência e Tecnologia, base para o BCC.
+3. **BCC** — o Bacharelado em Ciência da Computação: grade, PPCs e conclusão.

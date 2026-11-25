@@ -1,142 +1,181 @@
 <script setup lang="ts">
 /**
- * PdfParte.vue — Abertura de cada parte do PDF (Parte 1, 2, 3).
- * Convertido de PdfParte.dc.html (mockup placeholder → spec da issue).
+ * PdfParte.vue — Abertura editorial v2 de cada parte do PDF.
+ * Baseado em EPdfParte.dc.html.
  *
- * Reutiliza o padrão visual do Hero.vue mas adaptado para página inteira A4:
- *   - Wafer full-width cobre ~60% superior da página.
- *   - Bloco inferior branco com número + título da parte.
- *   - h1[data-pdf-section] ativa a named page "section" e o string-set
- *     no print.css para alimentar o cabeçalho corrente do Paged.js.
- *   - break-before: page via classe .page-break-before (definida em print.css).
+ * Layout (full-bleed, @page opener com margin: 0):
+ *   ┌───────────────────────────┐
+ *   │ ▓▓▓▓ banda amarela ▓▓▓▓▓ │ ← wafer + running header
+ *   │                           │
+ *   │ 02                        │ ← Anton 260 preto, extravasa pra baixo
+ *   ├───────────────────────────┤
+ *   │ PARTE 2                   │
+ *   │ BC&T                      │ ← h1 Anton 84 (string-set)
+ *   │ Bacharelado em Ciência…   │
+ *   │ ─────────────────────     │
+ *   │ 2.1  Capítulo             │ ← lista de content.ts
+ *   └───────────────────────────┘
  *
- * NOTA: layout absoluto apenas para visualização web; na impressão quem controla é @page.
- *
- * Props:
- *   tema   — 'amarelo' | 'azul' (default: 'amarelo')
- *   num    — número ordinal da parte como string, ex: '01', '02', '03'
- *   label  — nome curto da parte, ex: 'UFABC', 'BCT', 'BCC'
- *   titulo — título descritivo da parte
- *   seed   — semente do wafer decorativo
+ * Layout em FLEX/FLOW em vez de absolute: evita problemas com Paged.js que
+ * nem sempre respeita width/height fixos quando a @page muda de nome.
  */
 
 import { computed } from 'vue'
 import { Wafer } from '@shared/ui/Wafer'
 import { themes } from '@shared/config/tokens'
+import { listPdfPages } from '@shared/lib/content'
 import type { Tema } from '@shared/config/tokens'
 
 const props = withDefaults(defineProps<{
-  tema?:   Tema
-  num?:    string
-  label?:  string
-  titulo?: string
-  seed?:   number
+  section?:   string
+  num?:       string
+  label?:     string
+  titulo?:    string
+  subtitulo?: string
+  tema?:      Tema
+  seed?:      number
 }>(), {
-  tema:   'amarelo',
-  num:    '01',
-  label:  'UFABC',
-  titulo: 'A universidade e seus campi',
-  seed:   7,
+  section:   'ufabc',
+  num:       '01',
+  label:     'UFABC',
+  titulo:    'A universidade e seus campi',
+  subtitulo: '',
+  tema:      'amarelo',
+  seed:      7,
 })
 
 const t = computed(() => themes[props.tema])
 
-/** Texto completo para o cabeçalho corrente (string-set no print.css) */
-const secaoLabel = computed(() => `Parte ${props.num} · ${props.label}`)
+const caps = computed(() =>
+  listPdfPages()
+    .filter((p) => p.section === props.section)
+    .map((p, i) => ({
+      n: `${Number(props.num)}.${i + 1}`,
+      t: p.title,
+    })),
+)
+
+const runningHeader = computed(() => `Manual do aluno · ${props.label}`)
+const partLabel     = computed(() => `Parte ${Number(props.num)}`)
 </script>
 
 <template>
   <!--
-    Wrapper da página de parte.
-    .page-break-before é definida em print.css: break-before: page.
-    min-h-screen simula a folha inteira na web.
+    Wrapper full-page. `pdf-opener` o coloca na @page opener (margin: 0,
+    sem running headers) e força 210×297mm (print.css). Flex vertical:
+    - banda amarela cresce para ocupar ~60% da altura
+    - bloco inferior branco com título + lista
   -->
-  <article class="page-break-before relative w-full min-h-screen flex flex-col overflow-hidden bg-bg-default">
-
-    <!-- ═══════════════════════════════════════════════════════
-         BLOCO SUPERIOR — Fundo colorido + wafer full-width
-         ~60% da altura da página.
-    ════════════════════════════════════════════════════════════ -->
+  <article
+    :id="`parte-${Number(num)}`"
+    class="pdf-parte pdf-opener page-break-before relative flex flex-col overflow-hidden bg-bg-default text-fg-default font-sans"
+  >
+    <!--
+      Banda superior amarela com wafer. overflow-hidden NO wafer (não na
+      banda inteira), para o número "02" conseguir extravasar pra baixo
+      a partir do próprio article.
+    -->
     <div
-      class="relative flex-[0_0_60%] flex flex-col justify-end overflow-hidden"
+      class="pdf-parte__band relative"
       :style="{ background: t.bg }"
     >
-      <!-- Wafer de fundo (cobre todo o bloco) -->
-      <div
-        aria-hidden="true"
-        class="absolute inset-0 w-full h-full"
-      >
+      <!-- Wafer full-bleed, clipado pela banda -->
+      <div aria-hidden="true" class="absolute inset-0 overflow-hidden">
         <Wafer
           :tema="tema"
           :w="794"
-          :h="674"
-          :die="96"
-          :ax="0.5"
-          :ay="0.5"
+          :h="500"
+          :die="112"
+          :ax="1"
+          :ay="0"
           :seed="seed"
           :fundo="false"
         />
       </div>
 
-      <!-- Número da parte em tipografia display, canto inferior esquerdo -->
-      <div class="relative z-10 px-14 pb-10">
-        <span
-          class="font-mono text-[11px] font-bold tracking-[4px] uppercase block mb-3"
-          :style="{ color: t.text }"
-        >
-          Parte
-        </span>
-        <span
-          class="font-display text-[120px] leading-none block"
-          :style="{ color: t.title }"
-          aria-hidden="true"
-        >
-          {{ props.num }}
-        </span>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════════════════════════════════
-         BLOCO INFERIOR — Label + título da parte
-         Fundo branco, ~40% da página.
-    ════════════════════════════════════════════════════════════ -->
-    <div class="flex-1 flex flex-col justify-center px-14 py-10 bg-bg-default">
-
-      <!-- Label colorido (nome curto da parte) -->
+      <!-- Running header dentro da banda -->
       <p
-        class="font-mono text-[13px] font-bold tracking-[4px] uppercase mb-4"
-        :style="{ color: t.bg }"
+        class="absolute left-[72px] top-[56px] m-0 font-mono text-[12px] font-bold tracking-[3px] uppercase"
+        :style="{ color: t.text }"
       >
-        {{ label }}
+        {{ runningHeader }}
       </p>
 
       <!--
-        h1 com data-pdf-section:
-          - Ativa a named page "section" via print.css: h1[data-pdf-section] { page: section }
-          - Registra string-set para o cabeçalho corrente do Paged.js
-          - break-before: page já vem do wrapper (.page-break-before)
+        Número gigante posicionado no article (não na banda), com top calculado
+        para extravasar ~34px abaixo da borda da banda.
+        Bottom-aligned no band + leaking into white = o visual da target.
       -->
-      <h1
-        class="font-display text-[56px] leading-tight uppercase text-fg-default m-0"
-        data-pdf-section
-      >
-        {{ titulo }}
-      </h1>
-
-      <!-- Atributo oculto para alimentar o string-set de section-label no rodapé -->
       <span
-        class="sr-only"
-        :data-section-label="secaoLabel"
         aria-hidden="true"
-      />
-
-      <!-- Linha decorativa -->
-      <div
-        class="mt-10 h-1 w-16"
-        :style="{ background: t.bg }"
-        aria-hidden="true"
-      />
+        class="pdf-parte__num absolute left-[62px] font-display text-[260px] leading-none"
+        :style="{ color: t.title }"
+      >
+        {{ num }}
+      </span>
     </div>
 
+
+    <!-- ───────── Bloco inferior: títulos + lista ───────── -->
+    <div class="pdf-parte__body flex-1 px-[72px] pt-[52px]">
+      <p class="m-0 mb-[6px] font-mono text-[12px] font-bold tracking-[3px] uppercase text-fg-muted">
+        {{ partLabel }}
+      </p>
+
+      <h1
+        data-pdf-section
+        :data-section-label="`Parte ${Number(num)} · ${label}`"
+        class="m-0 font-display font-normal text-[84px] leading-none uppercase tracking-[0.3px] text-fg-default"
+      >
+        {{ label }}
+      </h1>
+
+      <p
+        v-if="subtitulo"
+        class="mt-[10px] mb-0 text-[20px]"
+        style="color: #2D3748"
+      >
+        {{ subtitulo }}
+      </p>
+
+      <!-- Lista de capítulos -->
+      <ol class="list-none m-0 mt-11 p-0 border-t border-fg-default text-[16px]">
+        <li
+          v-for="c in caps"
+          :key="c.n"
+          class="flex gap-5 py-[10px] border-b border-border-subtle"
+        >
+          <span class="font-mono text-[13px] text-fg-muted w-8 shrink-0">
+            {{ c.n }}
+          </span>
+          <span>{{ c.t }}</span>
+        </li>
+      </ol>
+    </div>
   </article>
 </template>
+
+<style scoped>
+/*
+ * Banda amarela — altura fixa de 500px para dar peso visual à abertura.
+ * Em A4 (297mm = 1123px), 500px é ~45% da altura, deixando espaço largo
+ * embaixo para o título + lista.
+ */
+/*
+ * Banda amarela — altura fixa calculada para ficar ~60% da altura A4.
+ * 297mm * 0.6 = ~178mm = ~674px a 96dpi.
+ */
+.pdf-parte__band {
+  height: 132mm;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/*
+ * Número gigante: posicionado abaixo da banda. top = banda height - leading
+ * do número ( 260px / 1 ) + 34px overflow. Resolve absolute no article.
+ */
+.pdf-parte__num {
+  top: calc(132mm - 226px);
+}
+</style>

@@ -4,8 +4,10 @@
  * Convertido de Sidebar.dc.html.
  *
  * Props:
- *   atual — label da página atual (para destacar o item ativo)
+ *   atual — label da página atual (fallback; o item ativo é derivado da rota)
  */
+
+import { useRoute } from 'vue-router'
 
 interface SidebarItem {
   t:    string
@@ -23,6 +25,8 @@ withDefaults(defineProps<{ atual?: string }>(), {
   atual: '',
 })
 
+const route = useRoute()
+
 const NAV: SidebarSection[] = [
   {
     label: 'Parte 1 · UFABC',
@@ -38,29 +42,34 @@ const NAV: SidebarSection[] = [
     label: 'Parte 2 · BC&T',
     c: '#0E1726',
     items: [
-      { t: 'O que é o BC&T',               href: '#' },
-      { t: 'Matriz curricular',            href: '/bct/matriz' },
-      { t: 'Quadrimestre ideal',           href: '#' },
-      { t: 'Reprovações',                  href: '#' },
-      { t: 'Conclusão e curso específico', href: '#' },
+      { t: 'O que é o BC&T',               href: '/bct/sobre'                          },
+      { t: 'Matriz curricular',            href: '/bct/matriz'                         },
+      { t: 'Quadrimestre ideal',           href: '/bct/matriz#quadrimestre-ideal'      },
+      { t: 'Reprovações',                  href: '/bct/matriz#reprovacoes'             },
+      { t: 'Extensão e formação complementar', href: '/bct/extensao'                   },
+      { t: 'Conclusão e curso específico', href: '/bct/extensao#conclusao-de-curso'    },
     ],
   },
   {
     label: 'Parte 3 · BCC',
     c: '#006E95',
     items: [
-      { t: 'O que é o BCC',             href: '#'          },
-      { t: 'Grade curricular',          href: '/bcc/grade' },
-      { t: 'Diferenças entre os PPCs',  href: '/bcc/ppc'   },
-      { t: 'Estágio',                   href: '#'          },
-      { t: 'PGC / TCC',                 href: '#'          },
-      { t: 'Conclusão do curso',        href: '#'          },
+      { t: 'O que é o BCC',             href: '/bcc/sobre'                                     },
+      { t: 'Grade curricular',          href: '/bcc/grade'                                     },
+      { t: 'Diferenças entre os PPCs',  href: '/bcc/ppc'                                       },
+      { t: 'Estágio',                   href: '/bcc/sobre#estagio'                             },
+      { t: 'PGC / TCC',                 href: '/bcc/sobre#pgc-tcc-projeto-de-conclusao-de-curso' },
+      { t: 'Conclusão do curso',        href: '/bcc/sobre#conclusao-do-curso'                  },
     ],
   },
 ]
 
 function linkClass(item: SidebarItem, atual: string): string {
-  const active = item.t === atual
+  // Ativo quando a rota (sem âncora) bate com a página atual; o label
+  // `atual` continua aceito para páginas que ainda não estão no NAV.
+  const active = item.href.includes('#')
+    ? false
+    : item.href === route.path || item.t === atual
   const base = 'block py-1.5 px-[14px] -ml-px no-underline border-l-2 text-[14px]'
   return active
     ? `${base} text-fg-default font-semibold border-brand-azul bg-bg-azul-soft`

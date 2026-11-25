@@ -14,7 +14,9 @@
  */
 
 import { computed } from 'vue'
+import { Wafer } from '@shared/ui/Wafer'
 import { themes } from '@shared/config/tokens'
+import { listPdfPages, pdfAnchor } from '@shared/lib/content'
 import type { Tema } from '@shared/config/tokens'
 
 const props = withDefaults(defineProps<{
@@ -29,100 +31,91 @@ const t = computed(() => themes[props.tema])
 interface TocEntry {
   id:    string   // âncora href destino (ex: "#parte-1")
   nivel: 1 | 2   // 1 = parte, 2 = seção
-  label: string  // eyebrow ("Parte 1")
+  label: string  // eyebrow ("Parte 01")
   texto: string  // título da entrada
 }
 
-const entradas: TocEntry[] = [
-  { id: '#parte-1',       nivel: 1, label: 'Parte 01', texto: 'UFABC — A universidade e seus campi'              },
-  { id: '#campi',         nivel: 2, label: '',          texto: 'Campi Santo André e São Bernardo'                 },
-  { id: '#matricula',     nivel: 2, label: '',          texto: 'Matrícula e trancamento'                          },
-  { id: '#avaliacao',     nivel: 2, label: '',          texto: 'Sistema de avaliação'                             },
-  { id: '#projetos',      nivel: 2, label: '',          texto: 'Iniciação científica e projetos'                  },
-  { id: '#parte-2',       nivel: 1, label: 'Parte 02', texto: 'BCT — Bacharelado em Ciência e Tecnologia'        },
-  { id: '#bct-matriz',    nivel: 2, label: '',          texto: 'Matriz curricular BCT'                            },
-  { id: '#bct-eixos',     nivel: 2, label: '',          texto: 'Eixos de formação'                                },
-  { id: '#bct-opcoes',    nivel: 2, label: '',          texto: 'Opções de terminalidade'                          },
-  { id: '#parte-3',       nivel: 1, label: 'Parte 03', texto: 'BCC — Bacharelado em Ciência da Computação'       },
-  { id: '#bcc-grade',     nivel: 2, label: '',          texto: 'Grade curricular BCC'                             },
-  { id: '#bcc-ppc',       nivel: 2, label: '',          texto: 'Projeto Pedagógico do Curso'                      },
-  { id: '#bcc-carreira',  nivel: 2, label: '',          texto: 'Perspectivas de carreira'                         },
-]
+/*
+ * Gerado a partir de content/*.md (pdf: true), na mesma ordem e agrupamento
+ * usados por PdfMarkdownPages — o sumário nunca fica desatualizado.
+ */
+const PARTES: Record<string, { num: number; texto: string }> = {
+  ufabc: { num: 1, texto: 'UFABC' },
+  bct:   { num: 2, texto: 'BC&T'  },
+  bcc:   { num: 3, texto: 'BCC'   },
+}
+
+const entradas = computed<TocEntry[]>(() => {
+  const out: TocEntry[] = []
+  for (const key of ['ufabc', 'bct', 'bcc']) {
+    const parte = PARTES[key]!
+    const pages = listPdfPages().filter((p) => p.section === key && p.route !== '/')
+    if (pages.length === 0) continue
+    out.push({
+      id:    `#parte-${parte.num}`,
+      nivel: 1,
+      label: `Parte ${parte.num}`,
+      texto: parte.texto,
+    })
+    for (const p of pages) {
+      out.push({ id: `#${pdfAnchor(p.route)}`, nivel: 2, label: '', texto: p.title })
+    }
+  }
+  return out
+})
 </script>
 
 <template>
-  <!--
-    Página de sumário: margem controlada pelo @page no print.css.
-    Na web, padding px-14 py-10 simula a margem de 2cm.
-  -->
-  <article class="w-full min-h-screen font-sans text-fg-default bg-bg-default px-14 py-10">
-
-    <!-- ═══════════════════════════════════════════════════════
-         Cabeçalho do sumário
-    ════════════════════════════════════════════════════════════ -->
-    <header class="mb-10 pb-6 border-b border-border-strong">
-      <!-- Eyebrow -->
-      <p class="font-mono text-[11px] font-bold tracking-[4px] uppercase text-fg-muted mb-2">
-        Manual do Aluno · BCC UFABC
-      </p>
-
-      <!-- Título da página: data-pdf-section captura via string-set no print.css -->
-      <h1
-        class="font-display text-[48px] leading-none uppercase text-fg-default"
-        data-pdf-section
-      >
-        Sumário
-      </h1>
+  <!-- Índice full-bleed (page: opener, margem 0) — layout da amostra v1 -->
+  <article class="pdf-toc pdf-opener page-break-before" :class="`pdf-toc--${tema}`">
+    <header class="pdf-toc__band" :style="{ background: t.bg }">
+      <div aria-hidden="true" class="pdf-toc__wafer">
+        <Wafer :tema="tema" :w="794" :h="320" :die="100" :ax="1" :ay="0" :seed="5" :fundo="false" />
+      </div>
+      <div class="pdf-toc__band-text" :style="{ color: t.text }">
+        <p class="pdf-toc__eyebrow">Universidade Federal do ABC</p>
+        <h1 class="pdf-toc__title" data-pdf-section :style="{ color: t.title }">Índice</h1>
+        <p class="pdf-toc__sub">O que você vai encontrar aqui</p>
+      </div>
     </header>
 
-    <!-- ═══════════════════════════════════════════════════════
-         Lista do sumário
-    ════════════════════════════════════════════════════════════ -->
-    <nav aria-label="Sumário do manual">
-      <ol class="list-none m-0 p-0 flex flex-col">
-        <template v-for="entrada in entradas" :key="entrada.id">
-
-          <!-- Entrada de PARTE (nível 1) -->
-          <li
-            v-if="entrada.nivel === 1"
-            class="mt-8 mb-2 first:mt-0"
-          >
-            <!-- Eyebrow da parte -->
-            <p
-              class="font-mono text-[10px] font-bold tracking-[3px] uppercase mb-1"
-              :style="{ color: t.bg }"
-            >
-              {{ entrada.label }}
-            </p>
-
-            <!-- Link da parte com número de página via Paged.js -->
-            <a
-              :href="entrada.id"
-              class="toc-link flex items-baseline font-display text-[22px] uppercase leading-tight text-fg-default no-underline border-b border-border-subtle pb-2"
-            >
-              <span class="flex-1">{{ entrada.texto }}</span>
-            </a>
-          </li>
-
-          <!-- Entrada de SEÇÃO (nível 2) -->
-          <li
-            v-else
-            class="border-b border-border-subtle"
-          >
-            <a
-              :href="entrada.id"
-              class="toc-link flex items-baseline py-2 font-sans text-[15px] text-fg-strong no-underline hover:text-fg-default"
-            >
-              <!-- Recuo visual para sub-itens -->
-              <span class="w-6 shrink-0" aria-hidden="true" />
-              <span class="flex-1">{{ entrada.texto }}</span>
-              <!-- Número de página: .toc-link::after em print.css injetará via target-counter -->
-            </a>
-          </li>
-
-        </template>
-      </ol>
+    <nav aria-label="Sumário do manual" class="pdf-toc__list">
+      <template v-for="entrada in entradas" :key="entrada.id">
+        <div v-if="entrada.nivel === 1" class="pdf-toc__parte" :data-n="entrada.label">
+          <span class="pdf-toc__parte-n">{{ entrada.label }}</span>
+          <a :href="entrada.id" class="pdf-toc__parte-t">{{ entrada.texto }}</a>
+        </div>
+        <a v-else :href="entrada.id" class="toc-link pdf-toc__item">
+          <span class="pdf-toc__item-t">{{ entrada.texto }}</span>
+          <span class="pdf-toc__leader" aria-hidden="true" />
+        </a>
+      </template>
     </nav>
 
+    <footer class="pdf-toc__foot">
+      <span>Manual do aluno · Índice</span>
+      <span class="pdf-toc__folio"><i />02</span>
+    </footer>
   </article>
 </template>
+
+<style scoped>
+.pdf-toc { position: relative; height: 296mm; overflow: hidden; background: #fff; font-family: var(--font-sans); color: var(--color-fg-default); }
+.pdf-toc__band { position: relative; height: 320px; overflow: hidden; }
+.pdf-toc__wafer { position: absolute; inset: 0; }
+.pdf-toc__band-text { position: absolute; left: 72px; bottom: 34px; }
+.pdf-toc__eyebrow { margin: 0 0 8px; font: 700 12px/1 var(--font-mono); letter-spacing: 6px; text-transform: uppercase; }
+.pdf-toc__title { margin: 0; font: 400 86px/1 var(--font-display); text-transform: uppercase; }
+.pdf-toc__sub { margin: 8px 0 0; font: 500 16px/1.3 var(--font-sans); }
+.pdf-toc__list { padding: 40px 72px 0; }
+.pdf-toc__parte { display: flex; align-items: baseline; gap: 14px; margin-top: 22px; padding-bottom: 6px; border-bottom: 2px solid var(--color-fg-default); }
+.pdf-toc__parte:first-child { margin-top: 0; }
+.pdf-toc__parte-n { font: 700 12px/1 var(--font-mono); color: var(--color-brand-verde); }
+.pdf-toc__parte[data-n="Parte 3"] .pdf-toc__parte-n { color: var(--color-brand-azul); }
+.pdf-toc__parte-t { font: 400 26px/1 var(--font-display); text-transform: uppercase; color: var(--color-fg-default); }
+.pdf-toc__item { display: flex; align-items: baseline; gap: 8px; padding: 5px 0; font: 400 13.5px/1.3 var(--font-sans); color: var(--color-fg-default); }
+.pdf-toc__leader { flex: 1; order: 1; border-bottom: 1.5px dotted #A0AAB4; transform: translateY(-3px); }
+.pdf-toc__foot { position: absolute; left: 72px; right: 72px; bottom: 34px; display: flex; justify-content: space-between; padding-top: 14px; border-top: 1px solid var(--color-border-subtle); font: 400 11px/1 var(--font-mono); letter-spacing: 3px; text-transform: uppercase; color: #5A6472; }
+.pdf-toc__folio { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; letter-spacing: 0; color: var(--color-fg-default); }
+.pdf-toc__folio i { width: 7px; height: 7px; background: var(--color-brand-amarelo); display: inline-block; }
+</style>

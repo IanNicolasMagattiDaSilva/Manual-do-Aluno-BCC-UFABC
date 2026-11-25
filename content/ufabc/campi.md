@@ -4,40 +4,90 @@ order: 10
 route: /ufabc/campi
 section: ufabc
 pdf: true
-description: Os dois campi da UFABC e a organização em Bacharelado Interdisciplinar + curso específico.
+description: Os dois campi da UFABC, os cursos oferecidos em cada um e o sistema quadrimestral.
 ---
 
 # Campi e cursos
 
-A UFABC possui dois campi, ambos no Grande ABC paulista, e oferece formação em
-duas etapas: o **Bacharelado Interdisciplinar** (BC&T ou BCNH) e os
-**cursos específicos** de graduação.
+A UFABC, criada em 2005 no ABC Paulista, é referência nacional por seu modelo
+interdisciplinar e excelência acadêmica. Com foco em áreas que vão das exatas às
+humanidades, a instituição adota o SISU como porta de entrada.
 
-## Campi
+Seu diferencial reside nos **ciclos básicos**, como o Bacharelado em Ciência e
+Tecnologia (BC&T) e o de Ciências e Humanidades (BC&H). Nesse sistema, o
+estudante ingressa em um curso de base ampla e, após a conclusão, escolhe sua
+especialização em engenharia, bacharelado específico ou licenciatura.
 
-A universidade está distribuída em dois campi complementares, cada um com
-laboratórios, biblioteca, restaurante universitário e moradia estudantil.
+## Campus Santo André
 
-### Campus Santo André
+Avenida dos Estados, 5001 — Bairro Bangu — CEP 09280-560.
+Sede administrativa, concentra a maior parte dos cursos de graduação, incluindo o BCC.
 
-Sede administrativa, concentra a maior parte dos cursos de graduação, incluindo
-o BCC. Fica no centro expandido de Santo André, com acesso por ônibus e
-transporte universitário.
+### Bacharelados
 
-### Campus São Bernardo do Campo
+- Biotecnologia
+- Ciência da Computação
+- Ciência de Dados
+- Ciências Biológicas
+- Física
+- Matemática
+- Química
+- BC&T
 
-Concentra o Bacharelado em Ciências e Humanidades (BCNH) e cursos específicos
-derivados dele, além de cursos de engenharia e pós-graduação.
+### Engenharias
 
-## Bacharelado Interdisciplinar
+- Ambiental e Urbana
+- Energia
+- Informação
+- Instrumentação, Automação e Robótica
+- Materiais
 
-Todos os ingressantes entram em um BI de três anos. Ao final, podem concluir
-apenas o BI ou prosseguir para um curso específico, aproveitando créditos.
+### Licenciaturas
+
+- Ciências Biológicas
+- Física
+- Matemática
+- Química
+- Pedagogia
+
+## Campus São Bernardo do Campo
+
+Alameda da Universidade, s/nº — Bairro Anchieta — CEP 09606-405.
+Concentra o BC&H e cursos específicos derivados dele, além de engenharias.
+
+### Bacharelados
+
+- Neurociência
+- Ciências Econômicas
+- Filosofia
+- Planejamento Territorial
+- Políticas Públicas
+- Relações Internacionais
+- BC&H
+
+### Engenharias
+
+- Aeroespacial
+- Biomédica
+- Gestão
+
+### Licenciatura
+
+- Filosofia
+- Geografia
+- História
+
+## Sistema quadrimestral
+
+O ano letivo na UFABC é dividido em **três quadrimestres de 12 semanas** de duração.
+Entre eles, há períodos de recesso acadêmico.
 
 > [!TIP]
-> O BCC é um curso específico cursado após o BC&T. Não há vestibular separado.
+> A matrícula para o próximo quadrimestre começa na metade do atual, e as
+> matérias ofertadas mudam conforme o planejamento de cada período.
 
-## Cursos específicos
+O **Calendário Acadêmico** indica datas e períodos de aulas, feriados, reposição
+de conteúdos e recessos. Já o **Calendário Administrativo** estipula prazos para
+procedimentos como matrícula em cursos específicos e cancelamento de disciplinas.
 
-A partir do BI, o estudante pode escolher entre dezenas de cursos específicos
-de graduação, como BCC, Engenharias, Física, Matemática, Química etc.
+Consulte em [prograd.ufabc.edu.br/calendarios](https://prograd.ufabc.edu.br/calendarios).

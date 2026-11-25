@@ -128,3 +128,11 @@ export function getPrevNext(route: string): {
     next: idx < pages.length - 1  ? pages[idx + 1]! : null,
   }
 }
+
+/**
+ * Âncora (id) de uma página dentro do PDF — usada pelo sumário
+ * (PdfSumario) e pelo <article> de cada página (PdfMarkdownPages).
+ */
+export function pdfAnchor(route: string): string {
+  return 'pdf' + (route === '/' ? '-inicio' : route.replace(/\//g, '-'))
+}

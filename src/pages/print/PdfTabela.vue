@@ -137,7 +137,7 @@ const notas: NoteItem[] = [
 
 <template>
   <article
-    class="max-w-[794px] mx-auto bg-bg-default text-fg-default font-sans text-[11pt] leading-[1.65] box-border px-[64px] pt-[64px] pb-[48px]"
+    class="page-break-before bg-bg-default text-fg-default font-sans text-[11pt] leading-[1.65]"
   >
     <!-- Eyebrow -->
     <p class="m-0 mb-2 font-mono text-[8pt] font-bold tracking-[3px] uppercase text-brand-azul">

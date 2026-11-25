@@ -43,12 +43,12 @@ onMounted(async () => {
      */
     const paged = await import('pagedjs') as unknown as {
       Previewer: new () => {
-        preview(content: Element, stylesheets: string[], renderTo: Element): Promise<unknown>
+        preview(content?: Element, stylesheets?: string[], renderTo?: Element): Promise<unknown>
       }
     }
 
     const previewer = new paged.Previewer()
-    await previewer.preview(document.body, [], document.body)
+    await previewer.preview(undefined, undefined, undefined)
 
     window.__PAGED_DONE__ = true
   } catch {

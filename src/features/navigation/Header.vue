@@ -29,8 +29,8 @@ const props = withDefaults(defineProps<{ ativo?: string }>(), {
 const NAV_ITEMS: NavItem[] = [
   { key: 'inicio', label: 'Início', to: '/'            },
   { key: 'ufabc',  label: 'UFABC',  to: '/ufabc/campi' },
-  { key: 'bct',    label: 'BC&T',   to: '/bct/matriz'  },
-  { key: 'bcc',    label: 'BCC',    to: '/bcc/grade'   },
+  { key: 'bct',    label: 'BC&T',   to: '/bct/sobre'   },
+  { key: 'bcc',    label: 'BCC',    to: '/bcc/sobre'   },
 ]
 
 const links = computed(() =>

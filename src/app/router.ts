@@ -12,6 +12,16 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
  * um comentário TODO ao lado da rota.
  */
 
+/** Rotas cujo conteúdo vem de content/*.md, renderizado por MarkdownPage. */
+function mdRoutes(entries: [path: string, name: string, section: string, title: string][]): RouteRecordRaw[] {
+  return entries.map(([path, name, section, title]) => ({
+    path,
+    name,
+    component: () => import('@pages/content').then(m => m.MarkdownPage),
+    meta:      { section, title },
+  }))
+}
+
 const routes: RouteRecordRaw[] = [
   {
     path:      '/',
@@ -46,27 +56,23 @@ const routes: RouteRecordRaw[] = [
     meta:      { section: 'ufabc', title: 'Projetos e oportunidades' },
   },
 
-  /* ---------- Parte 2 · BC&T ---------- */
-  {
-    path:      '/bct/matriz',
-    name:      'bct-matriz',
-    component: () => import('@pages/bct').then(m => m.MatrizBCTPage),
-    meta:      { section: 'bct', title: 'Matriz curricular BC&T' },
-  },
+  /* ---------- Parte 2 · BC&T ----------
+   * Páginas geradas a partir de content/bct/*.md (mesma fonte do PDF).
+   */
+  ...mdRoutes([
+    ['/bct/sobre',    'bct-sobre',    'bct', 'O que é o BC&T'],
+    ['/bct/matriz',   'bct-matriz',   'bct', 'Matriz curricular do BC&T'],
+    ['/bct/extensao', 'bct-extensao', 'bct', 'Extensão, apoio e formação complementar'],
+  ]),
 
-  /* ---------- Parte 3 · BCC ---------- */
-  {
-    path:      '/bcc/grade',
-    name:      'bcc-grade',
-    component: () => import('@pages/bcc').then(m => m.GradePage),
-    meta:      { section: 'bcc', title: 'Grade curricular' },
-  },
-  {
-    path:      '/bcc/ppc',
-    name:      'bcc-ppc',
-    component: () => import('@pages/bcc').then(m => m.PPCPage),
-    meta:      { section: 'bcc', title: 'Diferenças entre os PPCs' },
-  },
+  /* ---------- Parte 3 · BCC ----------
+   * Páginas geradas a partir de content/bcc/*.md (mesma fonte do PDF).
+   */
+  ...mdRoutes([
+    ['/bcc/sobre', 'bcc-sobre', 'bcc', 'O que é o BCC'],
+    ['/bcc/grade', 'bcc-grade', 'bcc', 'Grade curricular do BCC'],
+    ['/bcc/ppc',   'bcc-ppc',   'bcc', 'Diferenças entre os PPCs'],
+  ]),
 
   /* ---------- Rota do PDF ----------
    * Renderiza PrintPage, que compõe PrintLayout + todas as páginas /pdf/.

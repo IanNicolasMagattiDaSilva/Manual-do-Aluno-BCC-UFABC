@@ -8,8 +8,10 @@
  *   2. PdfSumario        — índice paginado
  *   3. PdfMarkdownPages  — partes 1-3 geradas a partir de content/*.md
  *                          (insere PdfParte antes das páginas de cada seção)
- *   4. PdfTabela         — comparação entre PPCs (layout customizado)
- *   5. PdfGrade          — grade curricular (A4 landscape, layout customizado)
+ *   4. PdfGrade          — grade curricular sugerida (A4 retrato, colunas por ano)
+ *
+ * PdfTabela fica fora da composição: a comparação entre PPCs já entra via
+ * content/bcc/ppc.md. Os dados de PdfGrade ainda são ilustrativos.
  *
  * Cada componente controla suas próprias quebras de página via
  * `h1[data-pdf-section]` (ver src/shared/styles/print.css).
@@ -20,7 +22,6 @@ import {
   PdfCapa,
   PdfSumario,
   PdfMarkdownPages,
-  PdfTabela,
   PdfGrade,
 } from '@pages/print'
 </script>
@@ -30,7 +31,6 @@ import {
     <PdfCapa tema="amarelo" />
     <PdfSumario />
     <PdfMarkdownPages />
-    <PdfTabela />
     <PdfGrade />
   </PrintLayout>
 </template>

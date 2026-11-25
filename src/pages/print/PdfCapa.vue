@@ -1,22 +1,11 @@
 <script setup lang="ts">
 /**
- * PdfCapa.vue — Capa do PDF (primeira página).
- * Convertido de Capa.dc.html (mockup placeholder → spec da issue).
- *
- * Layout:
- *   - Área superior: wafer full-width como fundo, com título "MANUAL DO ALUNO"
- *     sobre fundo colorido (amarelo ou azul).
- *   - Bloco central: nome do aluno + sumário de partes (Parte 1, 2, 3).
- *   - Faixa inferior escura: logotipo BCC em branco + nome da universidade.
- *
- * NOTA: layout absoluto apenas para visualização web; na impressão quem controla é @page.
- * As dimensões 794×1123 (A4 a 96 dpi) são comentário de referência apenas.
- * O @page { size: A4; margin: 0 } da capa (:first) garante sangria total.
- *
- * Props:
- *   tema  — 'amarelo' | 'azul' (default: 'amarelo')
- *   nome  — nome do aluno exibido na capa
- *   seed  — semente do wafer decorativo
+ * PdfCapa.vue — Capa do PDF (primeira página, full-bleed A4).
+ * Layout fiel à amostra v1:
+ *   - Hero amarelo (~62% da altura) com wafer; eyebrow, título e subtítulo
+ *     alinhados na base do hero.
+ *   - Bloco branco: "Material produzido por" (esq.) e conteúdo (dir.).
+ *   - Faixa verde + rodapé escuro com logo BCC e edição.
  */
 
 import { computed } from 'vue'
@@ -28,141 +17,113 @@ import type { Tema } from '@shared/config/tokens'
 const props = withDefaults(defineProps<{
   tema?: Tema
   nome?: string
+  edicao?: string
   seed?: number
 }>(), {
   tema: 'amarelo',
-  nome: 'SEU NOME',
+  nome: '[SEU NOME]',
+  edicao: '[ANO]',
   seed: 3,
 })
 
 const t = computed(() => themes[props.tema])
 
-/** Partes do manual para o sumário da capa */
-const partes = [
-  { num: '01', label: 'UFABC',          titulo: 'A universidade e seus campi'    },
-  { num: '02', label: 'BCT',            titulo: 'Bacharelado em Ciência e Tecnologia' },
-  { num: '03', label: 'BCC',            titulo: 'Bacharelado em Ciência da Computação' },
-]
+const partes = ['Parte 1 · UFABC', 'Parte 2 · BC&T', 'Parte 3 · BCC']
 </script>
 
 <template>
-  <!--
-    Wrapper da página: ocupa toda a folha A4.
-    Na web usamos min-h-screen; na impressão @page :first controla o tamanho.
-  -->
-  <article class="relative w-full min-h-screen flex flex-col bg-bg-default font-sans text-fg-default overflow-hidden">
-
-    <!-- ═══════════════════════════════════════════════════════
-         BLOCO SUPERIOR — Hero com wafer full-width
-         Ocupa ~55% da altura da página (aprox. 620px de 1123px A4).
-    ════════════════════════════════════════════════════════════ -->
-    <div
-      class="relative flex-[0_0_55%] flex flex-col justify-end overflow-hidden"
-      :style="{ background: t.bg }"
-    >
-      <!-- Wafer: posicionado absolute para cobrir todo o hero -->
-      <div
-        aria-hidden="true"
-        class="absolute inset-0 w-full h-full"
-      >
-        <Wafer
-          :tema="tema"
-          :w="794"
-          :h="620"
-          :die="96"
-          :ax="1"
-          :ay="0"
-          :seed="seed"
-          :fundo="false"
-        />
+  <article class="pdf-capa">
+    <div class="pdf-capa__hero" :style="{ background: t.bg }">
+      <div aria-hidden="true" class="pdf-capa__wafer">
+        <Wafer :tema="tema" :w="794" :h="700" :die="112" :ax="1" :ay="0" :seed="seed" :fundo="false" />
       </div>
 
-      <!-- Texto do hero (relativo ao wafer) -->
-      <div class="relative z-10 px-14 pb-10 pt-10">
-        <!-- Eyebrow mono -->
-        <p
-          class="font-mono text-[13px] font-bold tracking-[4px] uppercase mb-3"
-          :style="{ color: t.text }"
-        >
-          Universidade Federal do ABC
-        </p>
-
-        <!-- Título principal -->
-        <h1
-          class="font-display text-[80px] leading-none uppercase"
-          :style="{ color: t.title }"
-        >
-          Manual<br>do Aluno
-        </h1>
-
-        <!-- Sub-eyebrow -->
-        <p
-          class="mt-3 font-mono text-[14px] font-bold tracking-[2px] uppercase"
-          :style="{ color: t.text }"
-        >
-          Bacharelado em Ciência da Computação
-        </p>
+      <div class="pdf-capa__hero-text">
+        <p class="pdf-capa__eyebrow" :style="{ color: t.text }">&gt; Universidade Federal do ABC</p>
+        <h1 class="pdf-capa__title" :style="{ color: t.title }">Manual<br>do Aluno</h1>
+        <p class="pdf-capa__sub" :style="{ color: t.text }">Do BC&amp;T à Ciência da Computação</p>
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════
-         BLOCO CENTRAL — Nome do aluno + sumário de partes
-         Fundo branco/surface, ocupa ~33% da folha.
-    ════════════════════════════════════════════════════════════ -->
-    <div class="flex-1 px-14 py-8 flex flex-col justify-between bg-bg-default">
-
-      <!-- Nome do aluno -->
-      <div class="mb-6">
-        <p class="font-mono text-[11px] font-bold tracking-[4px] uppercase text-fg-muted mb-1">
-          Estudante
-        </p>
-        <p class="font-display text-[36px] uppercase leading-none text-fg-default">
-          {{ nome }}
-        </p>
+    <div class="pdf-capa__meta">
+      <div>
+        <p class="pdf-capa__label">Material produzido por</p>
+        <p class="pdf-capa__nome">{{ nome }}</p>
+        <p class="pdf-capa__curso">Graduando(a) em Ciência da Computação</p>
       </div>
-
-      <!-- Sumário de partes -->
-      <ul class="list-none m-0 p-0 flex flex-col gap-3">
-        <template v-for="parte in partes" :key="parte.num">
-          <li class="flex items-baseline gap-4 border-t border-border-subtle pt-3">
-            <!-- Número da parte -->
-            <span class="font-mono text-[11px] font-bold tracking-[3px] uppercase text-fg-muted w-6 shrink-0">
-              {{ parte.num }}
-            </span>
-            <!-- Label colorido -->
-            <span
-              class="font-mono text-[11px] font-bold tracking-[2px] uppercase shrink-0"
-              :style="{ color: t.bg }"
-            >
-              {{ parte.label }}
-            </span>
-            <!-- Título da parte -->
-            <span class="font-sans text-[14px] text-fg-strong">
-              {{ parte.titulo }}
-            </span>
-          </li>
-        </template>
-      </ul>
-    </div>
-
-    <!-- ═══════════════════════════════════════════════════════
-         FAIXA INFERIOR ESCURA — Logo BCC + universidade
-         Fundo #0E1726 (fg-default), texto claro.
-    ════════════════════════════════════════════════════════════ -->
-    <div class="bg-fg-default flex items-center justify-between px-14 py-6">
-      <!-- Logo BCC em branco -->
-      <Logo :cell="14" color="#FFFFFF" />
-
-      <!-- Nome da universidade à direita -->
-      <div class="text-right">
-        <p class="font-mono text-[10px] tracking-[3px] uppercase text-fg-on-dark-muted leading-tight">
-          Universidade Federal do ABC
-        </p>
-        <p class="font-mono text-[10px] tracking-[3px] uppercase text-fg-on-dark-muted leading-tight mt-1">
-          Ciência da Computação
-        </p>
+      <div class="pdf-capa__conteudo">
+        <p class="pdf-capa__label">Conteúdo</p>
+        <p v-for="p in partes" :key="p" class="pdf-capa__parte">{{ p }}</p>
       </div>
     </div>
 
+    <div class="pdf-capa__stripe" />
+    <div class="pdf-capa__foot">
+      <Logo :cell="4" color="#3FB8E5" />
+      <span class="pdf-capa__edicao">Edição {{ edicao }}</span>
+    </div>
   </article>
 </template>
+
+<style scoped>
+.pdf-capa {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 296mm;
+  overflow: hidden;
+  background: #fff;
+  color: var(--color-fg-default);
+  font-family: var(--font-sans);
+}
+.pdf-capa__hero {
+  position: relative;
+  flex: 0 0 62.2%;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+.pdf-capa__wafer { position: absolute; inset: 0; }
+.pdf-capa__hero-text { position: relative; padding: 0 72px 80px; }
+.pdf-capa__eyebrow {
+  margin: 0 0 14px;
+  font: 700 13px/1 var(--font-mono);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+}
+.pdf-capa__title {
+  margin: 0;
+  font: 400 128px/0.98 var(--font-display);
+  text-transform: uppercase;
+}
+.pdf-capa__sub { margin: 22px 0 0; font: 600 20px/1.2 var(--font-sans); }
+.pdf-capa__meta {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 44px 72px 0;
+}
+.pdf-capa__label {
+  margin: 0 0 8px;
+  font: 400 11px/1 var(--font-mono);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #5A6472;
+}
+.pdf-capa__nome { margin: 0; font: 700 20px/1.2 var(--font-sans); }
+.pdf-capa__curso { margin: 6px 0 0; font: 400 14px/1.4 var(--font-sans); color: #4A5568; }
+.pdf-capa__conteudo { text-align: right; }
+.pdf-capa__parte { margin: 0 0 5px; font: 400 15px/1.4 var(--font-sans); }
+.pdf-capa__stripe { height: 6px; background: var(--color-brand-verde); flex-shrink: 0; }
+.pdf-capa__foot {
+  flex: 0 0 9.8%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 72px;
+  background: var(--color-fg-default);
+}
+.pdf-capa__edicao { font: 400 12px/1 var(--font-mono); letter-spacing: 1px; color: #fff; }
+</style>

@@ -84,7 +84,9 @@ import Sidebar from './Sidebar.vue'  // OK — mesma feature
 
 ### Nova página
 
-1. Criar `src/pages/<nome>/<NomePage>.vue` usando `DocLayout.vue` como wrapper.
+1. Páginas de texto: criar o `.md` em `content/` e uma rota apontando para
+   `@pages/content` (`MarkdownPage`) — ver `mdRoutes()` em `src/app/router.ts`.
+   Páginas com layout próprio: criar `src/pages/<nome>/<NomePage>.vue` usando `DocLayout.vue`.
 2. Adicionar a rota em `src/app/router.ts`.
 3. Adicionar a entrada em `src/shared/config/routes.ts` (para breadcrumb e nav).
 4. Criar o arquivo `.md` correspondente em `content/`.
