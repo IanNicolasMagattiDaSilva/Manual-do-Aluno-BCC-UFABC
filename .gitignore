@@ -34,3 +34,6 @@ pnpm-debug.log*
 
 # Generated PDF
 dist/guia.pdf
+
+# PDF diagnostic output (comparisons, screenshots)
+pdf_diag/

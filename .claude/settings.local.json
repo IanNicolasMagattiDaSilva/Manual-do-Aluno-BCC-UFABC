@@ -15,7 +15,27 @@
       "Bash(bash /tmp/strip_prevnext.sh src/pages/ufabc/CampiPage.vue src/pages/ufabc/MatriculaPage.vue src/pages/ufabc/AvaliacaoPage.vue src/pages/ufabc/ProjetosPage.vue src/pages/bct/MatrizBCTPage.vue src/pages/bcc/GradePage.vue src/pages/bcc/PPCPage.vue)",
       "Bash(npm run *)",
       "Bash(echo \"exit=$?\")",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(npx playwright *)",
+      "Bash(pkill -f \"vite preview\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const p=fs.readFileSync\\('dist/guia.pdf'\\); const m=p.toString\\('binary'\\).match\\(/\\\\/Type\\\\s*\\\\/Page[^s]/g\\); console.log\\('guia.pdf pages:', m?.length\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const p=fs.readFileSync\\('C:/Users/Ian/Downloads/Manual-BCC-PDF-v2-editorial.pdf'\\); const m=p.toString\\('binary'\\).match\\(/\\\\/Type\\\\s*\\\\/Page[^s]/g\\); console.log\\('v2-target pages:', m?.length\\)\")",
+      "Bash(python3 -c \"import fitz; print\\('pymupdf ok'\\)\")",
+      "Bash(npx --yes pdf-parse)",
+      "Bash(pdftotext -layout -f 1 -l 10 dist/guia.pdf -)",
+      "Bash(mkdir -p /tmp/pdf_pages)",
+      "Bash(python3 -c ' *)",
+      "Bash(cp /tmp/test_md.mjs ./test_md.mjs)",
+      "Bash(node test_md.mjs)",
+      "Bash(pkill -f \"vite\")",
+      "Bash(pkill -f \"node\")",
+      "Bash(netstat -ano)",
+      "Bash(curl -s http://localhost:4173/print -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(python3 *)",
+      "Bash(pdftotext -layout \"c:/Users/Ian/Downloads/anexo_do_ad_consepe_249_-_ppc_bct_2023_-aprovado_consepe_-_final_pos_errata_12_23.pdf\" /tmp/ppc_bct.txt)",
+      "Read(//tmp/**)",
+      "Bash(xargs wc -l)",
+      "PowerShell(Test-Path *)"
     ]
   }
 }
