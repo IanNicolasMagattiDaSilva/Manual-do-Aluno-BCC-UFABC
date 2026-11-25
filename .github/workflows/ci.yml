@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Lint, testes e build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4          # versão vem de "packageManager" no package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Lint do conteúdo (content/*.md)
+        run: pnpm lint:content
+      - name: Testes (renderizador e conteúdo)
+        run: pnpm test
+      - name: Build (tipos + vite)
+        run: pnpm build
+
+  pdf:
+    name: Gerar e verificar o PDF
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Instalar Chromium (Playwright)
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Subir o preview e gerar o PDF
+        run: |
+          pnpm preview --port 4173 &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:4173/ >/dev/null && break
+            sleep 1
+          done
+          pnpm pdf
+      - name: Verificar o PDF
+        run: pnpm pdf:check
+      - name: Guardar o PDF como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: guia-pdf
+          path: dist/guia.pdf
+          if-no-files-found: error
