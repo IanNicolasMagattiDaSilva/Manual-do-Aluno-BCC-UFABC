@@ -9,12 +9,9 @@
  * inline no navegador.
  */
 
-const BASE = import.meta.env.BASE_URL  // '/' em dev, '/<repo>/' em project pages
-
-withDefaults(defineProps<{ href?: string; fileName?: string }>(), {
-  href:     `${BASE}guia.pdf`,
-  fileName: 'manual-aluno-bcc-ufabc.pdf',
-})
+// BASE_URL já inclui barra final: '/' em dev, '/<repo>/' em project pages.
+const href     = `${import.meta.env.BASE_URL}guia.pdf`
+const fileName = 'manual-aluno-bcc-ufabc.pdf'
 </script>
 
 <template>
