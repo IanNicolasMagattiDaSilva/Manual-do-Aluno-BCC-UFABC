@@ -59,3 +59,52 @@ jobs:
           name: guia-pdf
           path: dist/guia.pdf
           if-no-files-found: error
+
+  # Publica o site (dist/, incluindo guia.pdf) no GitHub Pages.
+  # Requer: Settings → Pages → Build and deployment → Source = GitHub Actions.
+  deploy:
+    name: Publicar no GitHub Pages
+    needs: pdf
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents:  read
+      pages:     write
+      id-token:  write
+    environment:
+      name: github-pages
+      url:  ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build do site (com BASE_URL do Pages)
+        env:
+          VITE_BASE_URL: /${{ github.event.repository.name }}/
+        run: pnpm build
+      - name: Instalar Chromium (Playwright)
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Gerar o PDF em dist/guia.pdf
+        env:
+          VITE_BASE_URL: /${{ github.event.repository.name }}/
+        run: |
+          pnpm preview --port 4173 &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:4173/ >/dev/null && break
+            sleep 1
+          done
+          pnpm pdf
+      - name: Fallback SPA e desligar Jekyll
+        run: |
+          cp dist/index.html dist/404.html
+          touch dist/.nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4

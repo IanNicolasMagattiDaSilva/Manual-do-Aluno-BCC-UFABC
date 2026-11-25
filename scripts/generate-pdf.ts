@@ -16,11 +16,21 @@
 
 // Ref: plano-site-guia-curso.md §4
 
+import { copyFileSync, existsSync, mkdirSync } from 'node:fs'
+import { dirname } from 'node:path'
 import { chromium } from 'playwright'
 import { expectedPdfPages } from './pdf-shared'
 
 const PREVIEW_URL = process.env['PREVIEW_URL'] ?? 'http://localhost:4173'
 const OUTPUT_PATH = process.env['PDF_OUTPUT']   ?? 'dist/guia.pdf'
+
+/*
+ * Também espelhamos o PDF em public/guia.pdf para que `pnpm dev` sirva o
+ * arquivo em http://localhost:5173/guia.pdf sem depender do pipeline de build.
+ * O `vite build` copia public/* para dist/*, então o arquivo em public/ também
+ * garante que builds locais sem rodar `pnpm pdf` ainda tenham um PDF válido.
+ */
+const PUBLIC_COPY = 'public/guia.pdf'
 
 async function main() {
   console.log(`[pdf] Abrindo ${PREVIEW_URL}/print ...`)
@@ -50,11 +60,21 @@ async function main() {
   if (pageErrors.length) throw new Error('Erros no navegador:\n  ' + pageErrors.join('\n  '))
 
   console.log(`[pdf] Gerando PDF → ${OUTPUT_PATH}`)
+  const outDir = dirname(OUTPUT_PATH)
+  if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true })
   await page.pdf({
     path:              OUTPUT_PATH,
     preferCSSPageSize: true,
     printBackground:   true,
   })
+
+  // Espelha em public/guia.pdf para `pnpm dev` servir o mesmo arquivo.
+  if (OUTPUT_PATH !== PUBLIC_COPY) {
+    const pubDir = dirname(PUBLIC_COPY)
+    if (!existsSync(pubDir)) mkdirSync(pubDir, { recursive: true })
+    copyFileSync(OUTPUT_PATH, PUBLIC_COPY)
+    console.log(`[pdf] Espelhado em ${PUBLIC_COPY}`)
+  }
 
   await browser.close()
   console.log('[pdf] Pronto.')

@@ -2,14 +2,17 @@
 /**
  * DownloadPdfButton.vue — Botão "Baixar PDF".
  *
- * Link direto para /guia.pdf (gerado por `pnpm pdf` no pipeline e servido
- * junto com o resto da build). O atributo `download` força download em vez
- * de abrir inline. Em dev (`pnpm dev`) o arquivo não existe — teste em
- * `pnpm preview` depois de `pnpm pdf`, ou no site deployado.
+ * Link direto para {BASE_URL}guia.pdf. O arquivo fica em public/guia.pdf
+ * (gerado por `pnpm pdf`, versionado no repo) e é copiado para dist/ pelo
+ * `vite build`, então funciona tanto em `pnpm dev` quanto em `pnpm preview`
+ * e no site deployado. O atributo `download` força download em vez de abrir
+ * inline no navegador.
  */
 
+const BASE = import.meta.env.BASE_URL  // '/' em dev, '/<repo>/' em project pages
+
 withDefaults(defineProps<{ href?: string; fileName?: string }>(), {
-  href:     '/guia.pdf',
+  href:     `${BASE}guia.pdf`,
   fileName: 'manual-aluno-bcc-ufabc.pdf',
 })
 </script>
